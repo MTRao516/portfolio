@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 interface Project { cat: string; icon: string; name: string; badge?: string; desc: string; tech: string[]; }
 interface Tech { name: string; url: string; }
+interface Impact { hi: string; title: string; desc: string; }
 interface SkillGroup { label: string; items: string[]; }
 interface Job { role: string; org: string; period: string; points: string[]; }
 interface Stat { n: string; l: string; }
@@ -63,6 +64,13 @@ export class AppComponent implements AfterViewInit {
     { label: 'Frontend', items: ['Angular', 'TypeScript', 'RxJS', 'HTML5 / CSS3', 'Bootstrap', 'PrimeNG', 'Angular Material'] },
     { label: 'Databases', items: ['MySQL', 'SQL Server', 'Redis'] },
     { label: 'Tools & Also', items: ['Git', 'Maven', 'Postman', 'Swagger', 'JUnit / Mockito', 'React', 'Python / FastAPI'] },
+  ];
+
+  impact: Impact[] = [
+    { hi: 'AI-first', title: 'Brought AI into the product', desc: 'Introduced OpenAI to Work360 — a clinical assistant and a vision pipeline that reads odometer & fuel data from field photos.' },
+    { hi: 'Near-zero', title: 'Manual data entry', desc: 'Fleet AI captures field-photo data automatically, replacing repetitive manual logging for the operations team.' },
+    { hi: 'Faster', title: 'APIs & reports', desc: 'Resolved N+1 query bottlenecks with JOIN FETCH / projections and added Redis caching for hot, frequently-read data.' },
+    { hi: '20+', title: 'Features · 3 products', desc: 'Delivered end-to-end across HRMS, Fleet, Health, Invoice and Security — plus a CAPEX portal and an AI voice agent.' },
   ];
 
   learning: string[] = [

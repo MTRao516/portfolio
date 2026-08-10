@@ -7,6 +7,7 @@
     <a class="brand" href="#top">MTR<span>.</span></a>
     <nav class="links">
       <a href="#about">About</a>
+      <a href="#impact">Impact</a>
       <a href="#projects">Work</a>
       <a href="#skills">Skills</a>
       <a href="#learning">Learning</a>
@@ -67,10 +68,24 @@
   </div>
 </section>
 
-<!-- PROJECTS -->
-<section id="projects" class="section alt">
+<!-- IMPACT -->
+<section id="impact" class="section alt">
   <div class="wrap">
-    <h2 class="reveal"><span class="num">02</span> Selected Work</h2>
+    <h2 class="reveal"><span class="num">02</span> Impact</h2>
+    <div class="impact-grid">
+      <div class="imp reveal" *ngFor="let m of impact; let i = index" [style.transition-delay.ms]="i*70">
+        <div class="imp-hi">{{ m.hi }}</div>
+        <div class="imp-title">{{ m.title }}</div>
+        <div class="imp-desc">{{ m.desc }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section">
+  <div class="wrap">
+    <h2 class="reveal"><span class="num">03</span> Selected Work</h2>
     <div class="cards">
       <article class="card reveal" *ngFor="let p of projects; let i = index" [style.transition-delay.ms]="i*55">
         <div class="card-top">
@@ -88,9 +103,9 @@
 </section>
 
 <!-- SKILLS -->
-<section id="skills" class="section">
+<section id="skills" class="section alt">
   <div class="wrap">
-    <h2 class="reveal"><span class="num">03</span> Skills</h2>
+    <h2 class="reveal"><span class="num">04</span> Skills</h2>
     <div class="techstrip reveal">
       <img *ngFor="let t of stack" [src]="t.url" [alt]="t.name" [title]="t.name" class="techlogo" loading="lazy">
     </div>
@@ -108,7 +123,7 @@
 <!-- LEARNING -->
 <section id="learning" class="section learn">
   <div class="wrap">
-    <h2 class="reveal"><span class="num">04</span> Currently Growing</h2>
+    <h2 class="reveal"><span class="num">05</span> Currently Growing</h2>
     <p class="learn-lead reveal">
       I believe great engineers are lifelong learners. Right now I'm investing my energy in
       <strong>AI engineering</strong> — building real projects to master these, not just read about them:
@@ -124,7 +139,7 @@
 <!-- EXPERIENCE -->
 <section id="experience" class="section alt">
   <div class="wrap">
-    <h2 class="reveal"><span class="num">05</span> Experience</h2>
+    <h2 class="reveal"><span class="num">06</span> Experience</h2>
     <div class="timeline">
       <div class="job reveal" *ngFor="let j of experience; let i = index" [style.transition-delay.ms]="i*80">
         <div class="job-head">
@@ -144,7 +159,7 @@
 <section id="contact" class="section contact">
   <div class="orb orb-b" style="left:auto;right:-120px;bottom:-120px;top:auto"></div>
   <div class="wrap reveal">
-    <h2><span class="num">06</span> Let's build something</h2>
+    <h2><span class="num">07</span> Let's build something</h2>
     <p class="contact-lead">
       I'm open to full-stack, Java or Angular roles in <strong>Hyderabad</strong> — or <strong>fully remote</strong>.
       If you're building in Spring Boot or Angular, or want AI brought into a real product, let's talk.

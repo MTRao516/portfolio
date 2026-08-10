@@ -118,6 +118,16 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
 .cat { display:inline-flex; align-items:center; font-size:10.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--cyan); }
 .card-ico { margin-right:7px; font-size:15px; line-height:1; }
 
+/* impact cards */
+.impact-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.imp { position:relative; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:22px 20px;
+  transition:transform .22s, box-shadow .3s, border-color .22s; }
+.imp:hover { transform:translateY(-6px); border-color:rgba(91,140,255,.5); box-shadow:0 24px 48px -24px rgba(91,140,255,.5); }
+.imp-hi { font-family:var(--display); font-size:30px; font-weight:800; line-height:1; margin-bottom:12px;
+  background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.imp-title { font-weight:700; font-size:15px; color:#fff; margin-bottom:7px; }
+.imp-desc { font-size:13.2px; color:var(--muted); line-height:1.5; }
+
 /* tech logo strip */
 .techstrip { display:flex; flex-wrap:wrap; gap:28px; align-items:center; margin-bottom:32px; padding-bottom:28px; border-bottom:1px solid var(--line); }
 .techlogo { height:42px; width:auto; opacity:.88; transition:transform .22s, opacity .22s; filter:drop-shadow(0 5px 12px rgba(0,0,0,.35)); }
@@ -170,7 +180,7 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:900px) {
-  .cards { grid-template-columns:repeat(2,1fr); }
+  .cards, .impact-grid { grid-template-columns:repeat(2,1fr); }
   .about-grid, .skills { grid-template-columns:1fr; }
   .hero-inner { flex-direction:column-reverse; align-items:flex-start; gap:28px; }
   .hero-photo img { width:150px; height:150px; }
@@ -178,7 +188,7 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
   .techlogo { height:34px; }
 }
 @media (max-width:600px) {
-  .cards { grid-template-columns:1fr; }
+  .cards, .impact-grid { grid-template-columns:1fr; }
   .links a:not(.btn-ghost) { display:none; }
   .hero { padding:80px 0 60px; }
   .stats { gap:26px; }
