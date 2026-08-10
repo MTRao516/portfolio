@@ -1,0 +1,2 @@
+/* All portfolio styling lives in global src/styles.css (single-page app). */
+:host { display:block; }

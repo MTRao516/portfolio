@@ -1,0 +1,10 @@
+# Netlify build config — auto-detected on import, no manual settings needed.
+[build]
+  command = "npm run build"
+  publish = "dist/portfolio/browser"
+
+# Single-page app: serve index.html for any path.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
