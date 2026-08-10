@@ -53,7 +53,12 @@ strong { color:#fff; font-weight:700; }
 /* ============ HERO ============ */
 .hero { position:relative; overflow:hidden; padding:120px 0 80px;
   background:radial-gradient(1000px 500px at 78% -10%, rgba(124,77,255,.14), transparent 60%); }
-.hero-inner { position:relative; z-index:2; }
+.hero-inner { position:relative; z-index:2; display:flex; align-items:center; gap:50px; }
+.hero-copy { flex:1; min-width:0; }
+.hero-photo { flex-shrink:0; }
+.hero-photo img { width:238px; height:238px; border-radius:50%; object-fit:cover; display:block;
+  border:3px solid rgba(255,255,255,.14);
+  box-shadow:0 0 0 7px rgba(91,140,255,.10), 0 26px 64px -18px rgba(124,77,255,.65); }
 .eyebrow { color:var(--brand); font-weight:700; letter-spacing:4px; text-transform:uppercase; font-size:13px; }
 .hero h1 { font-size:clamp(42px,7vw,76px); line-height:1.02; margin:14px 0 6px; font-weight:800; letter-spacing:-1.5px;
   background:linear-gradient(120deg,#fff 30%,#a9c2ff 70%,#c9b3ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
@@ -110,7 +115,13 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
 .card:hover { transform:translateY(-7px); box-shadow:0 26px 50px -24px rgba(91,140,255,.55); }
 .card:hover::before { opacity:1; }
 .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.cat { font-size:10.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--cyan); }
+.cat { display:inline-flex; align-items:center; font-size:10.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--cyan); }
+.card-ico { margin-right:7px; font-size:15px; line-height:1; }
+
+/* tech logo strip */
+.techstrip { display:flex; flex-wrap:wrap; gap:28px; align-items:center; margin-bottom:32px; padding-bottom:28px; border-bottom:1px solid var(--line); }
+.techlogo { height:42px; width:auto; opacity:.88; transition:transform .22s, opacity .22s; filter:drop-shadow(0 5px 12px rgba(0,0,0,.35)); }
+.techlogo:hover { transform:translateY(-5px) scale(1.08); opacity:1; }
 .badge { font-size:10.5px; font-weight:800; color:#0a0f1e; background:var(--grad-warm); padding:4px 10px; border-radius:20px; white-space:nowrap; }
 .card h3 { font-size:18px; font-weight:700; line-height:1.3; margin-bottom:8px; }
 .card-desc { font-size:14px; color:var(--muted); margin-bottom:16px; }
@@ -161,6 +172,10 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
 @media (max-width:900px) {
   .cards { grid-template-columns:repeat(2,1fr); }
   .about-grid, .skills { grid-template-columns:1fr; }
+  .hero-inner { flex-direction:column-reverse; align-items:flex-start; gap:28px; }
+  .hero-photo img { width:150px; height:150px; }
+  .techstrip { gap:20px; }
+  .techlogo { height:34px; }
 }
 @media (max-width:600px) {
   .cards { grid-template-columns:1fr; }

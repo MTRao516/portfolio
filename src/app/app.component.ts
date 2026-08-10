@@ -1,7 +1,8 @@
 import { Component, AfterViewInit, ElementRef, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface Project { cat: string; name: string; badge?: string; desc: string; tech: string[]; }
+interface Project { cat: string; icon: string; name: string; badge?: string; desc: string; tech: string[]; }
+interface Tech { name: string; url: string; }
 interface SkillGroup { label: string; items: string[]; }
 interface Job { role: string; org: string; period: string; points: string[]; }
 interface Stat { n: string; l: string; }
@@ -26,6 +27,24 @@ export class AppComponent implements AfterViewInit {
   github = 'https://github.com/MTRao516';
   year = 2026;
   scrollProgress = 0;
+
+  // Profile photo: drop a square image at public/me.jpg. Hidden gracefully until it exists.
+  photo = 'me.jpg';
+  photoOk = true;
+  onPhotoError(): void { this.photoOk = false; }
+
+  // Tech logo strip (devicon CDN — colored SVGs; text chips below remain if any fails to load)
+  stack: Tech[] = [
+    { name: 'Java', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
+    { name: 'Spring Boot', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg' },
+    { name: 'Angular', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg' },
+    { name: 'TypeScript', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
+    { name: 'React', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+    { name: 'Python', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
+    { name: 'MySQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
+    { name: 'Redis', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
+    { name: 'Git', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
+  ];
 
   intro =
     `I'm a backend-first full-stack developer with 5+ years at AITITUDE IT — a product company — ` +
@@ -52,31 +71,31 @@ export class AppComponent implements AfterViewInit {
   ];
 
   projects: Project[] = [
-    { cat: 'HRMS', name: 'HRMS & Employee Onboarding',
+    { cat: 'HRMS', icon: '👥', name: 'HRMS & Employee Onboarding',
       desc: 'User onboarding with client/unit mapping, roles & permissions, user hierarchy and policy management across the HR module.',
       tech: ['Spring Boot', 'Angular', 'JWT'] },
-    { cat: 'HR', name: 'Careers Management',
+    { cat: 'HR', icon: '💼', name: 'Careers Management',
       desc: 'A careers module for the platform — create and manage job openings and applications end-to-end.',
       tech: ['Spring Boot', 'Angular', 'MySQL'] },
-    { cat: 'AI · Health', name: 'Health360 AI Assistant', badge: 'OpenAI',
+    { cat: 'AI · Health', icon: '🩺', name: 'Health360 AI Assistant', badge: 'OpenAI',
       desc: 'The product\'s first AI feature — clinical support for doctors plus AI prescription templates, engineered with validation and doctor review before anything is saved.',
       tech: ['OpenAI', 'Spring Boot', 'Angular'] },
-    { cat: 'AI · Fleet', name: 'Fleet AI — Vision Capture', badge: 'OpenAI',
+    { cat: 'AI · Fleet', icon: '🚚', name: 'Fleet AI — Vision Capture', badge: 'OpenAI',
       desc: 'Reads odometer and fuel-receipt data straight from field photos into validated, structured records — removing manual data entry.',
       tech: ['OpenAI Vision', 'Spring Boot', 'AWS'] },
-    { cat: 'Operations', name: 'Incident Management',
+    { cat: 'Operations', icon: '🚨', name: 'Incident Management',
       desc: 'Assignment groups, a Kanban board, status/audit trail and exportable reports on the multi-tenant platform.',
       tech: ['Spring Boot', 'Angular', 'MySQL'] },
-    { cat: 'Security', name: 'Patrol Point Visit Report',
+    { cat: 'Security', icon: '🛡️', name: 'Patrol Point Visit Report',
       desc: 'GPS + Google Maps routing with PDF export — used by security clients as SLA-audit evidence, delivered across two UI skins.',
       tech: ['Google Maps', 'Spring Boot', 'Angular'] },
-    { cat: 'Finance', name: 'CAPEX Approval Portal', badge: 'Spring Boot 3',
+    { cat: 'Finance', icon: '💰', name: 'CAPEX Approval Portal', badge: 'Spring Boot 3',
       desc: 'Multi-tenant capital-expenditure approvals with a configurable multi-level engine, budget encumbrance, and a SHA-256 hash-chained, QR-verifiable audit trail.',
       tech: ['Spring Boot 3', 'Java 17', 'React', 'SQL Server'] },
-    { cat: 'KYC', name: 'Identity Verification (KYC)', badge: 'Signzy',
+    { cat: 'KYC', icon: '🪪', name: 'Identity Verification (KYC)', badge: 'Signzy',
       desc: 'Unified Signzy integration across 10+ Indian documents — Aadhaar DigiLocker, PAN, ESIC, bank, driving licence, passport, GSTIN, EPFO — with Aadhaar name-matching and AWS Rekognition.',
       tech: ['Signzy', 'Spring Boot', 'AWS'] },
-    { cat: 'Learning · AI', name: 'AI Voice Agent — Exploration', badge: 'Learning',
+    { cat: 'Learning · AI', icon: '🎙️', name: 'AI Voice Agent — Exploration', badge: 'Learning',
       desc: 'A hands-on learning project: a multilingual healthcare voice agent where I\'m going deep on LLMs, LangGraph orchestration and RAG. This is how I level up on agentic AI.',
       tech: ['LangGraph', 'Gemini', 'RAG', 'Python'] },
   ];

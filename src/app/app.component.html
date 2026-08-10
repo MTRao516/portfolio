@@ -22,6 +22,7 @@
   <div class="orb orb-b"></div>
   <div class="orb orb-c"></div>
   <div class="wrap hero-inner">
+    <div class="hero-copy">
     <p class="eyebrow a1">Hello, I'm</p>
     <h1 class="a2">Murala Thirupathi</h1>
     <p class="tag a3">{{ tagline }}</p>
@@ -39,6 +40,10 @@
         <div class="stat-n">{{ s.n }}</div>
         <div class="stat-l">{{ s.l }}</div>
       </div>
+    </div>
+    </div>
+    <div class="hero-photo a3" *ngIf="photoOk">
+      <img [src]="photo" alt="Murala Thirupathi — Full-Stack Developer" (error)="onPhotoError()">
     </div>
   </div>
 </section>
@@ -69,7 +74,7 @@
     <div class="cards">
       <article class="card reveal" *ngFor="let p of projects; let i = index" [style.transition-delay.ms]="i*55">
         <div class="card-top">
-          <span class="cat">{{ p.cat }}</span>
+          <span class="cat"><span class="card-ico">{{ p.icon }}</span>{{ p.cat }}</span>
           <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
         </div>
         <h3>{{ p.name }}</h3>
@@ -86,6 +91,9 @@
 <section id="skills" class="section">
   <div class="wrap">
     <h2 class="reveal"><span class="num">03</span> Skills</h2>
+    <div class="techstrip reveal">
+      <img *ngFor="let t of stack" [src]="t.url" [alt]="t.name" [title]="t.name" class="techlogo" loading="lazy">
+    </div>
     <div class="skills">
       <div class="skill-group reveal" *ngFor="let g of skills; let i = index" [style.transition-delay.ms]="i*70">
         <h4>{{ g.label }}</h4>
