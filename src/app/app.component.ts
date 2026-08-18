@@ -142,7 +142,7 @@ export class AppComponent implements AfterViewInit {
 
   intro =
     `I'm a backend-first full-stack developer with 5+ years at AITITUDE IT — a product company — ` +
-    `building Work360, a multi-tenant SaaS used across HRMS, careers, health, fleet, invoicing and security. ` +
+    `building a multi-tenant SaaS platform used across HR, health, fleet, invoicing and security. ` +
     `I own features end-to-end: database, Spring Boot APIs and Angular UIs.`;
 
   stats: Stat[] = [
@@ -168,10 +168,10 @@ export class AppComponent implements AfterViewInit {
   ];
 
   impact: Impact[] = [
-    { hi: 'AI-first', title: 'Brought AI into the product', desc: 'Introduced OpenAI to Work360 — a clinical assistant and a vision pipeline that reads odometer & fuel data from field photos.' },
-    { hi: 'Near-zero', title: 'Manual data entry', desc: 'Fleet AI captures field-photo data automatically, replacing repetitive manual logging for the operations team.' },
+    { hi: 'AI-first', title: 'Brought AI into the product', desc: 'Introduced OpenAI to the platform — a clinical assistant and a vision pipeline that reads odometer & fuel data from field photos.' },
+    { hi: 'Near-zero', title: 'Manual data entry', desc: 'A computer-vision feature captures field-photo data automatically, replacing repetitive manual logging.' },
     { hi: 'Faster', title: 'APIs & reports', desc: 'Resolved N+1 query bottlenecks with JOIN FETCH / projections and added Redis caching for hot, frequently-read data.' },
-    { hi: '20+', title: 'Features · 3 products', desc: 'Delivered end-to-end across HRMS, Fleet, Health, Invoice and Security — plus a CAPEX portal and an AI voice agent.' },
+    { hi: '20+', title: 'Features · 3 products', desc: 'Delivered end-to-end across HR, fleet, health, invoice and security — plus a capital-expenditure approval platform and a voice-AI agent.' },
   ];
 
   learning: string[] = [
@@ -180,8 +180,8 @@ export class AppComponent implements AfterViewInit {
   ];
 
   projects: Project[] = [
-    { cat: 'AI · Health', icon: '🩺', name: 'Health360 AI Assistant', badge: 'OpenAI', featured: true,
-      desc: 'The product\'s first AI feature — clinical support for doctors plus AI prescription templates, engineered with validation and doctor review before anything is saved.',
+    { cat: 'AI · Health', icon: '🩺', name: 'AI Clinical Assistant', badge: 'OpenAI', featured: true,
+      desc: 'The platform\'s first AI feature — contextual clinical support for doctors plus AI-suggested prescription templates, engineered with validation and doctor review before anything is saved.',
       tech: ['OpenAI', 'Spring Boot', 'Angular'],
       caseStudy: {
         problem: 'Doctors spent consultation time on repetitive documentation, and the product had no AI assistance at all.',
@@ -193,7 +193,7 @@ export class AppComponent implements AfterViewInit {
         ],
         outcome: 'Shipped the product\'s first production AI feature — AI-assisted suggestions with a human safety checkpoint.',
       } },
-    { cat: 'AI · Fleet', icon: '🚚', name: 'Fleet AI — Vision Capture', badge: 'OpenAI', featured: true,
+    { cat: 'AI · Vision', icon: '🚚', name: 'AI Vision Data Capture', badge: 'OpenAI', featured: true,
       desc: 'Reads odometer and fuel-receipt data straight from field photos into validated, structured records — removing manual data entry.',
       tech: ['OpenAI Vision', 'Spring Boot', 'AWS'],
       caseStudy: {
@@ -206,31 +206,31 @@ export class AppComponent implements AfterViewInit {
         ],
         outcome: 'Automated data capture from field photos, removing repetitive manual logging for the operations team.',
       } },
-    { cat: 'Finance', icon: '💰', name: 'CAPEX Approval Portal', badge: 'Spring Boot 3', featured: true,
-      desc: 'Multi-tenant capital-expenditure approvals with a configurable multi-level engine, budget encumbrance, and a SHA-256 hash-chained, QR-verifiable audit trail.',
+    { cat: 'Finance', icon: '💰', name: 'Capital-Expenditure Approval Platform', badge: 'Spring Boot 3', featured: true,
+      desc: 'A capital-expenditure approval product with a configurable multi-level engine, budget tracking, and a tamper-evident, verifiable audit trail.',
       tech: ['Spring Boot 3', 'Java 17', 'React', 'SQL Server'],
       caseStudy: {
         problem: 'Capital-expenditure approvals needed configurable multi-level routing with a tamper-evident, verifiable audit trail.',
         approach: [
           'Built a configurable multi-level approval engine — amount-slab routing, parallel approvers and completion rules.',
-          'Implemented budget encumbrance that flows into consumption as approvals progress.',
-          'Designed a SHA-256 hash-chained audit trail with public QR verification of documents.',
+          'Implemented budget tracking that flows from commitment into consumption as approvals progress.',
+          'Designed a tamper-evident, verifiable audit trail for every action.',
           'Delivered end-to-end on Spring Boot 3 / Java 17 (SQL Server) with a React frontend, multi-tenant.',
         ],
-        outcome: 'A separate product that proves end-to-end delivery and range beyond the core Work360 platform.',
+        outcome: 'A product that proves end-to-end delivery across a robust backend and a modern frontend.',
       } },
-    { cat: 'Learning · AI', icon: '🎙️', name: 'AI Voice Agent — Exploration', badge: 'Pilot', featured: true,
-      desc: 'A hands-on learning project: a multilingual healthcare voice agent where I\'m going deep on LLMs, LangGraph orchestration and RAG.',
+    { cat: 'AI · Exploration', icon: '🎙️', name: 'Conversational Voice-AI Agent', featured: true,
+      desc: 'A hands-on project: a multilingual voice agent exploring agentic AI — LLM orchestration, real-time speech and retrieval-augmented generation (RAG).',
       tech: ['LangGraph', 'Gemini', 'RAG', 'Python'],
       caseStudy: {
-        problem: 'Hospitals field repetitive inbound calls — and I wanted to master agentic, real-time voice AI on a real problem.',
+        problem: 'I wanted to master agentic, real-time voice AI hands-on, on a realistic conversational problem.',
         approach: [
-          'Built a multilingual (English / Telugu / Hindi) voice receptionist as a deliberate learning project.',
-          'Used a LangGraph state machine with an emergency-transfer guard and anti-hallucination checks.',
-          'Real-time speech via Google Gemini Live with a Sarvam cascade as failover.',
-          'RAG over PostgreSQL + pgvector; transactional actions delegated to a Java backend.',
+          'Built a multilingual voice agent using a LangGraph state machine with guard nodes and anti-hallucination checks.',
+          'Real-time speech-to-speech with a cascade fallback for reliability.',
+          'Retrieval-augmented generation (RAG) over a vector store to ground answers in real data.',
+          'Focused on the reliability engineering around the model — not just the model call.',
         ],
-        outcome: 'In pilot — live call-tested through telephony. My hands-on route to mastering LLMs, RAG and agentic AI.',
+        outcome: 'A hands-on route to mastering LLMs, RAG and agentic AI — my current growth area.',
       } },
     { cat: 'HRMS', icon: '👥', name: 'HRMS & Employee Onboarding',
       desc: 'User onboarding with client/unit mapping, roles & permissions, user hierarchy and policy management across the HR module.',
@@ -258,29 +258,29 @@ export class AppComponent implements AfterViewInit {
         ],
         outcome: 'An end-to-end incident workflow with a visual board and a complete audit trail on the multi-tenant platform.',
       } },
-    { cat: 'Security', icon: '🛡️', name: 'Patrol Point Visit Report',
-      desc: 'GPS + Google Maps routing with PDF export — used by security clients as SLA-audit evidence, delivered across two UI skins.',
+    { cat: 'Security', icon: '🛡️', name: 'Field Patrol & Compliance Reporting',
+      desc: 'GPS + Google Maps routing with PDF export — used as SLA-audit evidence for field-security compliance.',
       tech: ['Google Maps', 'Spring Boot', 'Angular'],
       caseStudy: {
-        problem: 'Security clients needed verifiable proof that guards actually visited each patrol point, for SLA audits and contract evidence.',
+        problem: 'Field-security operations needed verifiable proof that guards actually visited each checkpoint, for SLA audits.',
         approach: [
           'Captured GPS coordinates + timestamp at each patrol scan as tamper-resistant proof.',
           'Plotted the visit route on Google Maps for a clear visual record.',
           'Generated exportable PDF reports for SLA-audit evidence.',
-          'Delivered the feature across two UI skins (legacy and new).',
+          'Delivered the Angular UI and Spring Boot APIs end-to-end.',
         ],
-        outcome: 'Location-verified patrol reports that security clients rely on as SLA and contract evidence.',
+        outcome: 'Location-verified patrol reports used as SLA and compliance evidence.',
       } },
-    { cat: 'KYC', icon: '🪪', name: 'Identity Verification (KYC)', badge: 'Signzy',
-      desc: 'Unified Signzy integration across 10+ Indian documents — Aadhaar DigiLocker, PAN, ESIC, bank, driving licence, passport, GSTIN, EPFO — with Aadhaar name-matching and AWS Rekognition.',
-      tech: ['Signzy', 'Spring Boot', 'AWS'],
+    { cat: 'KYC', icon: '🪪', name: 'Identity Verification (KYC)',
+      desc: 'A unified integration for third-party identity verification across 10+ Indian identity documents, with name-matching and face verification.',
+      tech: ['Spring Boot', 'AWS', 'REST APIs'],
       caseStudy: {
         problem: 'Verifying identity required checking many different Indian documents reliably and consistently — hard to do one integration at a time.',
         approach: [
-          'Integrated Signzy REST APIs into a single, unified verification framework.',
-          'Supported 10+ documents — Aadhaar DigiLocker e-KYC, PAN, ESIC, bank, driving licence, passport, GSTIN, EPFO.',
-          'Added Aadhaar name-matching and AWS Rekognition face indexing for stronger checks.',
-          'Persisted verified "gold-copy" records with hardened, secure API handling.',
+          'Integrated a third-party verification provider into a single, unified framework.',
+          'Supported 10+ Indian identity documents behind one consistent API.',
+          'Added name-matching and face verification for stronger identity checks.',
+          'Persisted verified records with hardened, secure API handling.',
         ],
         outcome: 'One framework that verifies 10+ identity documents with name-matching and face checks.',
       } },
@@ -301,11 +301,11 @@ export class AppComponent implements AfterViewInit {
   experience: Job[] = [
     {
       role: 'Full-Stack Developer',
-      org: 'AITITUDE IT Pvt Ltd · Product Company — Work360 (Multi-Tenant SaaS)',
+      org: 'AITITUDE IT Pvt Ltd · Product Company — Multi-Tenant Enterprise SaaS',
       period: 'Feb 2021 – Present · Hyderabad',
       points: [
-        'Introduced the product\'s first AI features (OpenAI) — Health360 clinical assistant and Fleet AI vision.',
-        'Built HRMS onboarding, Careers, Incident Management, Patrol, Attendance and Invoice features end-to-end.',
+        'Introduced the platform\'s first AI features (OpenAI) — an AI clinical assistant and a computer-vision data-capture feature.',
+        'Built HR onboarding, careers, incident-management, field-patrol, attendance and invoicing features end-to-end.',
         'Delivered 20+ production features across HR, Fleet, Health, Invoice and Security modules.',
         'Built features within the platform\'s multi-tenant, JWT-secured architecture (tenant isolation, RBAC).',
         'Performance tuning — resolved N+1 queries (JOIN FETCH / projections) and added Redis caching.',
