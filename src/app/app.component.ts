@@ -234,19 +234,68 @@ export class AppComponent implements AfterViewInit {
       } },
     { cat: 'HRMS', icon: '👥', name: 'HRMS & Employee Onboarding',
       desc: 'User onboarding with client/unit mapping, roles & permissions, user hierarchy and policy management across the HR module.',
-      tech: ['Spring Boot', 'Angular', 'JWT'] },
+      tech: ['Spring Boot', 'Angular', 'JWT'],
+      caseStudy: {
+        problem: 'Onboarding users at scale needed correct client/unit mapping, role assignment and policy setup — slow and error-prone when handled manually.',
+        approach: [
+          'Built the onboarding flow with client/unit mapping and role & permission assignment.',
+          'Modelled the user hierarchy and policy management within the HR module.',
+          'Enforced access with JWT + RBAC on the multi-tenant platform.',
+          'Delivered the Angular screens and Spring Boot APIs end-to-end.',
+        ],
+        outcome: 'A streamlined onboarding module that maps each user to the right client, unit, roles and policies from day one.',
+      } },
     { cat: 'Operations', icon: '🚨', name: 'Incident Management',
       desc: 'Assignment groups, a Kanban board, status/audit trail and exportable reports on the multi-tenant platform.',
-      tech: ['Spring Boot', 'Angular', 'MySQL'] },
+      tech: ['Spring Boot', 'Angular', 'MySQL'],
+      caseStudy: {
+        problem: 'Teams needed a structured way to log, assign, track and audit operational incidents instead of ad-hoc handling.',
+        approach: [
+          'Built assignment groups and routing so incidents reach the right owners.',
+          'Implemented a Kanban board for the status flow (New → Assigned → In Progress → Resolved → Closed).',
+          'Added a status/audit trail so every transition is recorded with who and when.',
+          'Provided exportable reports for review and compliance.',
+        ],
+        outcome: 'An end-to-end incident workflow with a visual board and a complete audit trail on the multi-tenant platform.',
+      } },
     { cat: 'Security', icon: '🛡️', name: 'Patrol Point Visit Report',
       desc: 'GPS + Google Maps routing with PDF export — used by security clients as SLA-audit evidence, delivered across two UI skins.',
-      tech: ['Google Maps', 'Spring Boot', 'Angular'] },
+      tech: ['Google Maps', 'Spring Boot', 'Angular'],
+      caseStudy: {
+        problem: 'Security clients needed verifiable proof that guards actually visited each patrol point, for SLA audits and contract evidence.',
+        approach: [
+          'Captured GPS coordinates + timestamp at each patrol scan as tamper-resistant proof.',
+          'Plotted the visit route on Google Maps for a clear visual record.',
+          'Generated exportable PDF reports for SLA-audit evidence.',
+          'Delivered the feature across two UI skins (legacy and new).',
+        ],
+        outcome: 'Location-verified patrol reports that security clients rely on as SLA and contract evidence.',
+      } },
     { cat: 'KYC', icon: '🪪', name: 'Identity Verification (KYC)', badge: 'Signzy',
       desc: 'Unified Signzy integration across 10+ Indian documents — Aadhaar DigiLocker, PAN, ESIC, bank, driving licence, passport, GSTIN, EPFO — with Aadhaar name-matching and AWS Rekognition.',
-      tech: ['Signzy', 'Spring Boot', 'AWS'] },
+      tech: ['Signzy', 'Spring Boot', 'AWS'],
+      caseStudy: {
+        problem: 'Verifying identity required checking many different Indian documents reliably and consistently — hard to do one integration at a time.',
+        approach: [
+          'Integrated Signzy REST APIs into a single, unified verification framework.',
+          'Supported 10+ documents — Aadhaar DigiLocker e-KYC, PAN, ESIC, bank, driving licence, passport, GSTIN, EPFO.',
+          'Added Aadhaar name-matching and AWS Rekognition face indexing for stronger checks.',
+          'Persisted verified "gold-copy" records with hardened, secure API handling.',
+        ],
+        outcome: 'One framework that verifies 10+ identity documents with name-matching and face checks.',
+      } },
     { cat: 'HR', icon: '💼', name: 'Careers Management',
       desc: 'A careers module for the platform — create and manage job openings and applications end-to-end.',
-      tech: ['Spring Boot', 'Angular', 'MySQL'] },
+      tech: ['Spring Boot', 'Angular', 'MySQL'],
+      caseStudy: {
+        problem: 'The platform needed a single place to publish job openings and manage applications, rather than tracking them off-system.',
+        approach: [
+          'Built CRUD for job openings with their fields and lifecycle.',
+          'Managed applications end-to-end against each opening.',
+          'Delivered Spring Boot APIs and an Angular UI integrated with the platform.',
+        ],
+        outcome: 'A self-contained careers module for creating openings and handling applications end-to-end.',
+      } },
   ];
 
   experience: Job[] = [

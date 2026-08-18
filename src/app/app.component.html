@@ -138,6 +138,10 @@
         <div class="tags">
           <span class="tag-chip" *ngFor="let t of p.tech">{{ t }}</span>
         </div>
+        <button class="cs-btn" *ngIf="p.caseStudy" type="button" (click)="openCase(p, $event)"
+                [attr.aria-label]="'View case study: ' + p.name">
+          Read the case study <span aria-hidden="true">→</span>
+        </button>
       </article>
     </div>
   </div>
