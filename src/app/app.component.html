@@ -104,10 +104,31 @@
 <!-- PROJECTS -->
 <section id="projects" class="section" aria-labelledby="h-projects">
   <div class="wrap">
-    <h2 id="h-projects" class="reveal"><span class="num">03</span> Selected Work</h2>
-    <p class="section-lead reveal">Flagship projects have a full case study — problem, approach and outcome.</p>
+    <h2 id="h-projects" class="reveal"><span class="num">03</span> Featured Case Studies</h2>
+    <p class="section-lead reveal">The work I'm proudest of — each with the problem, my approach and the outcome.</p>
+
+    <div class="featured-grid">
+      <article class="fcard reveal" *ngFor="let p of featuredProjects; let i = index" [style.transition-delay.ms]="i*70">
+        <div class="card-top">
+          <span class="cat"><span class="card-ico" aria-hidden="true">{{ p.icon }}</span>{{ p.cat }}</span>
+          <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
+        </div>
+        <h3>{{ p.name }}</h3>
+        <p class="fcard-problem"><span>Problem</span> {{ p.caseStudy?.problem }}</p>
+        <p class="card-desc">{{ p.desc }}</p>
+        <div class="tags">
+          <span class="tag-chip" *ngFor="let t of p.tech">{{ t }}</span>
+        </div>
+        <button class="cs-btn" *ngIf="p.caseStudy" type="button" (click)="openCase(p, $event)"
+                [attr.aria-label]="'View case study: ' + p.name">
+          Read the case study <span aria-hidden="true">→</span>
+        </button>
+      </article>
+    </div>
+
+    <h3 class="more-heading reveal">More work</h3>
     <div class="cards">
-      <article class="card reveal" [class.featured]="p.featured" *ngFor="let p of projects; let i = index" [style.transition-delay.ms]="i*45">
+      <article class="card reveal" *ngFor="let p of moreProjects; let i = index" [style.transition-delay.ms]="i*45">
         <div class="card-top">
           <span class="cat"><span class="card-ico" aria-hidden="true">{{ p.icon }}</span>{{ p.cat }}</span>
           <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
@@ -117,27 +138,25 @@
         <div class="tags">
           <span class="tag-chip" *ngFor="let t of p.tech">{{ t }}</span>
         </div>
-        <button class="cs-btn" *ngIf="p.caseStudy" type="button" (click)="openCase(p, $event)"
-                [attr.aria-label]="'View case study: ' + p.name">
-          View case study <span aria-hidden="true">→</span>
-        </button>
       </article>
     </div>
   </div>
 </section>
 
-<!-- SKILLS -->
+<!-- EXPERTISE -->
 <section id="skills" class="section alt" aria-labelledby="h-skills">
   <div class="wrap">
-    <h2 id="h-skills" class="reveal"><span class="num">04</span> Skills</h2>
+    <h2 id="h-skills" class="reveal"><span class="num">04</span> Expertise</h2>
+    <p class="section-lead reveal">What I bring — organised by capability, with the tools as evidence.</p>
     <div class="techstrip reveal">
       <img *ngFor="let t of stack" [src]="t.url" [alt]="t.name" [title]="t.name" class="techlogo" loading="lazy" width="42" height="42">
     </div>
-    <div class="skills">
-      <div class="skill-group reveal" *ngFor="let g of skills; let i = index" [style.transition-delay.ms]="i*70">
-        <h4>{{ g.label }}</h4>
+    <div class="expertise-grid">
+      <div class="cap reveal" *ngFor="let c of expertise; let i = index" [style.transition-delay.ms]="i*70">
+        <h4>{{ c.title }}</h4>
+        <p class="cap-blurb">{{ c.blurb }}</p>
         <div class="tags">
-          <span class="tag-chip solid" *ngFor="let s of g.items">{{ s }}</span>
+          <span class="tag-chip solid" *ngFor="let ch of c.chips">{{ ch }}</span>
         </div>
       </div>
     </div>
@@ -211,7 +230,7 @@
 
 <!-- CASE STUDY MODAL -->
 <div class="modal-backdrop" *ngIf="openProject" (click)="closeCase()"></div>
-<div class="modal" *ngIf="openProject" role="dialog" aria-modal="true" [attr.aria-label]="openProject.name + ' case study'">
+<div class="modal" *ngIf="openProject" role="dialog" aria-modal="true" [attr.aria-label]="openProject.name + ' case study'" (keydown)="onModalKeydown($event)">
   <button class="modal-close" type="button" (click)="closeCase()" aria-label="Close case study">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>

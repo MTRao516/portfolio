@@ -9,6 +9,7 @@ interface Project {
 interface Tech { name: string; url: string; }
 interface Impact { hi: string; title: string; desc: string; }
 interface SkillGroup { label: string; items: string[]; }
+interface Capability { title: string; blurb: string; chips: string[]; }
 interface Job { role: string; org: string; period: string; points: string[]; }
 interface Stat { n: string; l: string; }
 
@@ -44,7 +45,7 @@ export class AppComponent implements AfterViewInit {
   sections = ['about', 'impact', 'projects', 'skills', 'learning', 'experience', 'contact'];
   navItems = [
     { id: 'about', label: 'About' }, { id: 'impact', label: 'Impact' },
-    { id: 'projects', label: 'Work' }, { id: 'skills', label: 'Skills' },
+    { id: 'projects', label: 'Work' }, { id: 'skills', label: 'Expertise' },
     { id: 'learning', label: 'Learning' }, { id: 'experience', label: 'Experience' },
   ];
 
@@ -92,6 +93,22 @@ export class AppComponent implements AfterViewInit {
     this.lastFocused?.focus();
   }
 
+  // keep keyboard focus inside the open dialog (WCAG)
+  onModalKeydown(e: KeyboardEvent): void {
+    if (e.key !== 'Tab') return;
+    const modal = this.host.nativeElement.querySelector('.modal') as HTMLElement | null;
+    if (!modal) return;
+    const nodes = Array.from(modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')) as HTMLElement[];
+    if (nodes.length === 0) return;
+    const first = nodes[0], last = nodes[nodes.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && active === first) { last.focus(); e.preventDefault(); }
+    else if (!e.shiftKey && active === last) { first.focus(); e.preventDefault(); }
+  }
+
+  get featuredProjects(): Project[] { return this.projects.filter(p => p.featured); }
+  get moreProjects(): Project[] { return this.projects.filter(p => !p.featured); }
+
   @HostListener('document:keydown.escape') onEsc(): void {
     if (this.openProject) this.closeCase();
     else if (this.menuOpen) this.closeMenu();
@@ -135,11 +152,19 @@ export class AppComponent implements AfterViewInit {
     { n: '3', l: 'products shipped' },
   ];
 
-  skills: SkillGroup[] = [
-    { label: 'Backend', items: ['Java', 'Spring Boot', 'Spring Data JPA', 'Hibernate', 'REST APIs', 'JWT', 'Microservices'] },
-    { label: 'Frontend', items: ['Angular', 'TypeScript', 'RxJS', 'HTML5 / CSS3', 'Bootstrap', 'PrimeNG', 'Angular Material'] },
-    { label: 'Databases', items: ['MySQL', 'SQL Server', 'Redis'] },
-    { label: 'Tools & Also', items: ['Git', 'Maven', 'Postman', 'Swagger', 'JUnit / Mockito', 'React', 'Python / FastAPI'] },
+  expertise: Capability[] = [
+    { title: 'Backend Engineering',
+      blurb: 'Design and build Java / Spring Boot services — REST APIs, JPA/Hibernate, and performance tuning (N+1 fixes, Redis caching) on a multi-tenant, JWT-secured platform.',
+      chips: ['Java', 'Spring Boot', 'Spring Data JPA', 'Hibernate', 'REST APIs', 'JWT', 'MySQL', 'Redis'] },
+    { title: 'AI Integration',
+      blurb: 'Shipped the product\'s first production AI (OpenAI) and building agentic AI — with structured-output validation, RAG and human-in-the-loop as first-class concerns.',
+      chips: ['OpenAI', 'Google Gemini', 'RAG', 'LangGraph', 'Prompt Engineering'] },
+    { title: 'Full-Stack Delivery',
+      blurb: 'Own features end-to-end — database schema → Spring Boot APIs → Angular UIs. Comfortable in React and Python/FastAPI when a project calls for it.',
+      chips: ['Angular', 'TypeScript', 'RxJS', 'React', 'Python / FastAPI', 'HTML5 / CSS3'] },
+    { title: 'Foundations & Communication',
+      blurb: 'A decade teaching Computer Science (as HOD) means I explain complex systems simply — in design discussions, code reviews and mentoring.',
+      chips: ['System Thinking', 'Mentoring', 'Code Review', 'CS Fundamentals'] },
   ];
 
   impact: Impact[] = [
