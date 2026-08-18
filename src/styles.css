@@ -158,7 +158,7 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
   border-radius:18px; padding:22px; transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .3s, border-color .3s; overflow:hidden; }
 .card::before { content:''; position:absolute; inset:0; border-radius:18px; padding:1.4px; background:var(--grad);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
-  mask-composite:exclude; opacity:0; transition:opacity .3s; }
+  mask-composite:exclude; opacity:0; transition:opacity .3s; pointer-events:none; }
 .card:hover { transform:translateY(-6px); box-shadow:var(--shadow-card); }
 .card:hover::before { opacity:.9; }
 .card.featured { background:var(--surface2); border-color:var(--line2); }
@@ -199,7 +199,7 @@ h2::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var
   border-radius:20px; padding:28px; overflow:hidden; transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .3s; }
 .fcard::before { content:''; position:absolute; inset:0; border-radius:20px; padding:1.5px; background:var(--grad);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
-  mask-composite:exclude; opacity:0; transition:opacity .3s; }
+  mask-composite:exclude; opacity:0; transition:opacity .3s; pointer-events:none; }
 .fcard:hover { transform:translateY(-6px); box-shadow:var(--shadow-card); }
 .fcard:hover::before { opacity:.9; }
 .fcard h3 { font-size:22px; font-weight:800; color:var(--ink); line-height:1.2; margin-bottom:14px; }
