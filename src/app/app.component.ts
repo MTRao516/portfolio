@@ -151,6 +151,34 @@ export class AppComponent implements AfterViewInit {
     { n: 'AI', l: 'features shipped (OpenAI)' },
     { n: '3', l: 'products shipped' },
   ];
+  // count-up display (starts at 0 for numeric stats, animated into view)
+  statDisplay: string[] = this.stats.map(s => /^\d/.test(s.n) ? '0' + s.n.replace(/^\d+/, '') : s.n);
+
+  private animateStats(): void {
+    const dur = 1100, start = performance.now();
+    const targets = this.stats.map(s => {
+      const m = /^(\d+)(.*)$/.exec(s.n);
+      return m ? { num: +m[1], suffix: m[2], text: null as string | null } : { num: 0, suffix: '', text: s.n };
+    });
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / dur);
+      const e = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      this.statDisplay = targets.map(t => t.text !== null ? t.text : Math.round(t.num * e) + t.suffix);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // premium cursor-follow spotlight on cards
+  onCardMove(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }
+  onCardLeave(e: MouseEvent): void {
+    (e.currentTarget as HTMLElement).style.setProperty('--mx', '-300px');
+  }
 
   expertise: Capability[] = [
     { title: 'Backend Engineering',
@@ -331,5 +359,18 @@ export class AppComponent implements AfterViewInit {
       });
     }, { threshold: 0.12 });
     els.forEach((el: Element) => io.observe(el));
+
+    // count-up when the stats strip scrolls into view
+    const statsEl = this.host.nativeElement.querySelector('.stats');
+    if (statsEl) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) { this.statDisplay = this.stats.map(s => s.n); }
+      else {
+        const so = new IntersectionObserver((ents) => {
+          ents.forEach(en => { if (en.isIntersecting) { this.animateStats(); so.disconnect(); } });
+        }, { threshold: 0.4 });
+        so.observe(statsEl);
+      }
+    }
   }
 }

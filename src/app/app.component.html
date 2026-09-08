@@ -56,8 +56,8 @@
       <p class="loc a6"><span aria-hidden="true">📍</span> {{ location }}</p>
 
       <dl class="stats a6">
-        <div class="stat" *ngFor="let s of stats">
-          <dt class="stat-n">{{ s.n }}</dt>
+        <div class="stat" *ngFor="let s of stats; let i = index">
+          <dt class="stat-n">{{ statDisplay[i] }}</dt>
           <dd class="stat-l">{{ s.l }}</dd>
         </div>
       </dl>
@@ -92,7 +92,8 @@
   <div class="wrap">
     <h2 id="h-impact" class="reveal"><span class="num">02</span> Impact</h2>
     <div class="impact-grid">
-      <div class="imp reveal" *ngFor="let m of impact; let i = index" [style.transition-delay.ms]="i*70">
+      <div class="imp reveal" *ngFor="let m of impact; let i = index" [style.transition-delay.ms]="i*70"
+           (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
         <div class="imp-hi">{{ m.hi }}</div>
         <div class="imp-title">{{ m.title }}</div>
         <div class="imp-desc">{{ m.desc }}</div>
@@ -108,7 +109,8 @@
     <p class="section-lead reveal">The work I'm proudest of — each with the problem, my approach and the outcome.</p>
 
     <div class="featured-grid">
-      <article class="fcard reveal" *ngFor="let p of featuredProjects; let i = index" [style.transition-delay.ms]="i*70">
+      <article class="fcard reveal" *ngFor="let p of featuredProjects; let i = index" [style.transition-delay.ms]="i*70"
+               (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
         <div class="card-top">
           <span class="cat"><span class="card-ico" aria-hidden="true">{{ p.icon }}</span>{{ p.cat }}</span>
           <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
@@ -128,7 +130,8 @@
 
     <h3 class="more-heading reveal">More work</h3>
     <div class="cards">
-      <article class="card reveal" *ngFor="let p of moreProjects; let i = index" [style.transition-delay.ms]="i*45">
+      <article class="card reveal" *ngFor="let p of moreProjects; let i = index" [style.transition-delay.ms]="i*45"
+               (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
         <div class="card-top">
           <span class="cat"><span class="card-ico" aria-hidden="true">{{ p.icon }}</span>{{ p.cat }}</span>
           <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
