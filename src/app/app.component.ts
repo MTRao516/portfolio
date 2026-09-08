@@ -25,10 +25,10 @@ export class AppComponent implements AfterViewInit {
 
   name = 'Murala Thirupathi';
   alias = 'MTR';
-  tagline = 'Full-Stack Developer · Java · Spring Boot · Angular';
+  tagline = 'Full-Stack Developer · Java · Spring Boot · Angular · AI';
   email = 'thirupathiraomurala@gmail.com';
   phone = '+91 96400 46001';
-  location = 'Hyderabad, Telangana — or fully Remote';
+  location = 'Hyderabad, Telangana · Open to new roles — Hybrid or Remote';
   linkedin = 'https://www.linkedin.com/in/thirupathi-murala/';
   github = 'https://github.com/MTRao516';
   year = 2026;
@@ -141,14 +141,15 @@ export class AppComponent implements AfterViewInit {
   ];
 
   intro =
-    `I'm a backend-first full-stack developer with 5+ years at AITITUDE IT — a product company — ` +
-    `building a multi-tenant SaaS platform used across HR, health, fleet, invoicing and security. ` +
-    `I own features end-to-end: database, Spring Boot APIs and Angular UIs.`;
+    `I'm a backend-first full-stack developer (Java · Spring Boot · Angular) with 5+ years building a ` +
+    `multi-tenant enterprise SaaS platform end-to-end — database, Spring Boot APIs and Angular UIs — across ` +
+    `HR, health, fleet, invoicing and security. I shipped the product's first production AI features, and ` +
+    `I'm now going deep on agentic AI and RAG.`;
 
   stats: Stat[] = [
     { n: '5+', l: 'Years building SaaS' },
     { n: '20+', l: 'Production features' },
-    { n: 'AI', l: 'features shipped (OpenAI)' },
+    { n: '2', l: 'AI systems in production' },
     { n: '3', l: 'products shipped' },
   ];
   // count-up display (starts at 0 for numeric stats, animated into view)
