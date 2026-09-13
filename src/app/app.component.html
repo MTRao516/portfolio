@@ -64,13 +64,21 @@
 <section id="top" class="hero" aria-label="Introduction">
   <div class="wrap hero-inner" (mousemove)="onHeroMove($event)" (mouseleave)="onHeroLeave($event)">
     <div class="hero-copy">
-      <p class="eyebrow a1">Full-Stack Developer — Hyderabad, India</p>
+      <p class="eyebrow a1">Full-Stack Developer · Hyderabad, India</p>
       <h1 class="a2"><span class="w">Murala</span> <span class="w em">Thirupathi</span></h1>
       <p class="tag a3">{{ tagline }}</p>
       <div class="flag a4">5+ years · Multi-tenant SaaS · <b>Production AI (OpenAI)</b></div>
       <p class="intro a5">{{ intro }}</p>
       <div class="cta a6">
         <a class="btn" [href]="'mailto:' + email">Get in touch</a>
+        <a class="btn-resume" href="Murala-Thirupathi-Resume.pdf" download
+           aria-label="Download résumé (PDF)">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 19h16"/>
+          </svg>
+          Download résumé
+        </a>
         <a class="btn-outline" [href]="linkedin" target="_blank" rel="noopener">LinkedIn</a>
         <a class="btn-outline" [href]="github" target="_blank" rel="noopener">GitHub</a>
       </div>
@@ -96,12 +104,12 @@
     <h2 id="h-about" class="reveal"><span class="num">01</span> About</h2>
     <div class="about-grid">
       <p class="reveal">
-        I taught programming for over a decade — then became a programmer myself. Today I build full-stack
+        I taught programming for over a decade, then became a programmer myself. Today I build full-stack
         products end-to-end at <strong>AITITUDE IT</strong>, a product company, on a
         <strong>multi-tenant enterprise SaaS platform</strong> spanning HR, health, fleet, invoicing and security.
       </p>
       <p class="reveal" style="transition-delay:.08s">
-        I'm <strong>backend-first</strong> — I started in Java and grew into full-stack with Angular, and I built the
+        I'm <strong>backend-first</strong>: I started in Java and grew into full-stack with Angular, and I built the
         <strong>product's first AI features</strong> with validation and human review built in. I'm currently going
         deeper into <strong>LLMs, RAG and agentic AI</strong> through hands-on projects.
       </p>
@@ -109,7 +117,7 @@
         <dt>Based in</dt><dd>Hyderabad, India · Hybrid or Remote</dd>
         <dt>Experience</dt><dd>5+ years · since Feb 2021</dd>
         <dt>Focus</dt><dd>Java · Spring Boot · Angular</dd>
-        <dt>Currently</dt><dd>Agentic AI &amp; RAG — building a multilingual voice agent</dd>
+        <dt>Currently</dt><dd>Agentic AI &amp; RAG · building a multilingual voice agent</dd>
         <dt>Before code</dt><dd>13 years teaching Computer Science</dd>
       </dl>
     </div>
@@ -135,7 +143,7 @@
 <section id="projects" class="section" aria-labelledby="h-projects">
   <div class="wrap">
     <h2 id="h-projects" class="reveal"><span class="num">03</span> Featured Case Studies</h2>
-    <p class="section-lead reveal">The work I'm proudest of — each with the problem, my approach and the outcome.</p>
+    <p class="section-lead reveal">The work I'm proudest of, each with the problem, my approach and the outcome.</p>
 
     <div class="featured-grid">
       <article class="fcard reveal" *ngFor="let p of featuredProjects; let i = index" [style.transition-delay.ms]="i*70"
@@ -176,7 +184,7 @@
 <section id="skills" class="section alt" aria-labelledby="h-skills">
   <div class="wrap">
     <h2 id="h-skills" class="reveal"><span class="num">04</span> Expertise</h2>
-    <p class="section-lead reveal">What I bring — organised by capability, with the tools as evidence.</p>
+    <p class="section-lead reveal">What I bring, organised by capability, with the tools as evidence.</p>
     <div class="techstrip reveal">
       <img *ngFor="let t of stack" [src]="t.url" [alt]="t.name" [title]="t.name" class="techlogo" loading="lazy" width="42" height="42">
     </div>
@@ -198,7 +206,7 @@
     <h2 id="h-learning" class="reveal"><span class="num">05</span> Currently Growing</h2>
     <p class="learn-lead reveal">
       I believe great engineers are lifelong learners. Right now I'm investing my energy in
-      <strong>AI engineering</strong> — building real projects to master these, not just read about them:
+      <strong>AI engineering</strong>, building real projects to master these rather than only reading about them:
     </p>
     <div class="tags learn-tags reveal">
       <span class="learn-chip" *ngFor="let l of learning; let i = index" [style.transition-delay.ms]="i*60">
@@ -232,7 +240,7 @@
   <div class="wrap reveal">
     <h2 id="h-contact"><span class="num">07</span> Let's build something</h2>
     <p class="contact-lead">
-      I'm open to full-stack, Java or Angular roles in <strong>Hyderabad</strong> — or <strong>fully remote</strong>.
+      I'm open to full-stack, Java or Angular roles in <strong>Hyderabad</strong>, or <strong>fully remote</strong>.
       If you're building in Spring Boot or Angular, or want AI brought into a real product, let's talk.
     </p>
     <div class="cta">
