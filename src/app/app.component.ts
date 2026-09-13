@@ -1,17 +1,57 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef, HostListener, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface CaseStudy { problem: string; approach: string[]; outcome: string; }
-interface Project {
-  cat: string; icon: string; name: string; badge?: string; desc: string; tech: string[];
-  featured?: boolean; caseStudy?: CaseStudy;
+interface CaseStudy {
+  problem: string;
+  approach: string[];
+  outcome: string;
 }
-interface Tech { name: string; url: string; }
-interface Impact { hi: string; title: string; desc: string; }
-interface SkillGroup { label: string; items: string[]; }
-interface Capability { title: string; blurb: string; chips: string[]; }
-interface Job { role: string; org: string; period: string; points: string[]; }
-interface Stat { n: string; l: string; }
+
+interface Project {
+  id: string;
+  cat: string;
+  name: string;
+  badge?: string;
+  desc: string;
+  proof: string;
+  tech: string[];
+  featured?: boolean;
+  caseStudy: CaseStudy;
+}
+
+interface Impact {
+  hi: string;
+  label: string;
+  desc: string;
+}
+
+interface Capability {
+  title: string;
+  blurb: string;
+  chips: string[];
+}
+
+interface Job {
+  role: string;
+  org: string;
+  period: string;
+  points: string[];
+}
+
+interface Signal {
+  label: string;
+  value: string;
+}
+
+interface Fit {
+  title: string;
+  desc: string;
+}
+
+interface Tech {
+  name: string;
+  url: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -24,109 +64,266 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private host = inject(ElementRef<HTMLElement>);
 
   name = 'Murala Thirupathi';
-  alias = 'MTR';
-  tagline = 'Java · Spring Boot · Angular · AI Integration';
+  initials = 'MTR';
   email = 'thirupathiraomurala@gmail.com';
   phone = '+91 96400 46001';
-  location = 'Hyderabad, Telangana · Open to new roles (Hybrid or Remote)';
+  location = 'Hyderabad, Telangana';
   linkedin = 'https://www.linkedin.com/in/thirupathi-murala/';
   github = 'https://github.com/MTRao516';
-  year = 2026;
+  year = new Date().getFullYear();
 
-  // ---- UI state ----
-  scrollProgress = 0;
   theme: 'dark' | 'light' = 'dark';
   menuOpen = false;
   copied = false;
+  photoOk = true;
+  scrollProgress = 0;
   activeSection = 'top';
   openProject: Project | null = null;
-  private lastFocused: HTMLElement | null = null;
+  hydTime = '';
 
-  sections = ['about', 'impact', 'projects', 'skills', 'learning', 'experience', 'contact'];
+  private timer: ReturnType<typeof setInterval> | null = null;
+  private lastFocused: HTMLElement | null = null;
+  private observers: IntersectionObserver[] = [];
+
+  sections = ['top', 'proof', 'work', 'craft', 'trajectory', 'experience', 'contact'];
   navItems = [
-    { id: 'about', label: 'About' }, { id: 'impact', label: 'Impact' },
-    { id: 'projects', label: 'Work' }, { id: 'skills', label: 'Expertise' },
-    { id: 'learning', label: 'Learning' }, { id: 'experience', label: 'Experience' },
+    { id: 'proof', label: 'Proof' },
+    { id: 'work', label: 'Work' },
+    { id: 'craft', label: 'Craft' },
+    { id: 'trajectory', label: 'Growth' },
+    { id: 'experience', label: 'Experience' },
   ];
 
-  // Profile photo: drop a square image at public/me.jpg. Hidden gracefully until it exists.
-  photo = 'me.jpg';
-  photoOk = true;
-  onPhotoError(): void { this.photoOk = false; }
+  headline = 'Murala Thirupathi';
 
-  constructor() {
-    try {
-      const saved = localStorage.getItem('mtr-theme') as 'dark' | 'light' | null;
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.theme = saved ?? (prefersDark ? 'dark' : 'light');
-    } catch { this.theme = 'dark'; }
-    document.documentElement.setAttribute('data-theme', this.theme);
-  }
+  roleLine =
+    'Backend-first full-stack developer turning complex enterprise workflows into fast, reliable SaaS.';
 
-  toggleTheme(): void {
-    this.theme = this.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', this.theme);
-    try { localStorage.setItem('mtr-theme', this.theme); } catch { /* ignore */ }
-  }
+  intro =
+    'I build Java, Spring Boot and Angular products end to end across HR, health, fleet, invoicing and security. At AITITUDE IT, I shipped production AI features, tuned slow APIs, and translated complex business workflows into software teams can trust.';
 
-  toggleMenu(): void { this.menuOpen = !this.menuOpen; }
-  closeMenu(): void { this.menuOpen = false; }
+  signals: Signal[] = [
+    { label: 'Core stack', value: 'Java / Spring Boot / Angular' },
+    { label: 'Experience', value: '5+ years building SaaS' },
+    { label: 'Differentiator', value: 'Teacher turned product engineer' },
+    { label: 'Now building', value: 'Agentic AI, RAG, voice systems' },
+  ];
 
-  copyEmail(): void {
-    try {
-      navigator.clipboard.writeText(this.email);
-      this.copied = true;
-      setTimeout(() => (this.copied = false), 1800);
-    } catch { /* clipboard unavailable */ }
-  }
-
-  openCase(p: Project, ev: Event): void {
-    if (!p.caseStudy) return;
-    this.lastFocused = ev.target as HTMLElement;
-    this.openProject = p;
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => (this.host.nativeElement.querySelector('.modal-close') as HTMLElement | null)?.focus(), 0);
-  }
-  closeCase(): void {
-    this.openProject = null;
-    document.body.style.overflow = '';
-    this.lastFocused?.focus();
-  }
-
-  // keep keyboard focus inside the open dialog (WCAG)
-  onModalKeydown(e: KeyboardEvent): void {
-    if (e.key !== 'Tab') return;
-    const modal = this.host.nativeElement.querySelector('.modal') as HTMLElement | null;
-    if (!modal) return;
-    const nodes = Array.from(modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')) as HTMLElement[];
-    if (nodes.length === 0) return;
-    const first = nodes[0], last = nodes[nodes.length - 1];
-    const active = document.activeElement;
-    if (e.shiftKey && active === first) { last.focus(); e.preventDefault(); }
-    else if (!e.shiftKey && active === last) { first.focus(); e.preventDefault(); }
-  }
-
-  get featuredProjects(): Project[] { return this.projects.filter(p => p.featured); }
-  get moreProjects(): Project[] { return this.projects.filter(p => !p.featured); }
-
-  @HostListener('document:keydown.escape') onEsc(): void {
-    if (this.openProject) this.closeCase();
-    else if (this.menuOpen) this.closeMenu();
-  }
-
-  @HostListener('window:scroll') onScroll(): void {
-    const el = document.documentElement;
-    const max = el.scrollHeight - el.clientHeight;
-    this.scrollProgress = max > 0 ? (el.scrollTop / max) * 100 : 0;
-    // active section
-    const y = el.scrollTop + 120;
-    let current = 'top';
-    for (const id of this.sections) {
-      const sec = document.getElementById(id);
-      if (sec && sec.offsetTop <= y) current = id;
+  fitMatrix: Fit[] = [
+    {
+      title: 'Full-stack product engineer',
+      desc: 'Owns database, Spring Boot APIs and Angular screens without losing the product context.'
+    },
+    {
+      title: 'Java backend specialist',
+      desc: 'Comfortable with REST APIs, JPA, performance tuning, tenant-aware security and production debugging.'
+    },
+    {
+      title: 'Practical AI integrator',
+      desc: 'Adds OpenAI, Gemini and RAG features with validation, fallbacks and human review.'
     }
-    this.activeSection = current;
-  }
+  ];
+
+  impact: Impact[] = [
+    {
+      hi: 'AI-first',
+      label: 'Introduced product AI',
+      desc: 'Built the platform\'s first OpenAI-backed clinical assistant and vision capture workflows with validation and human review.'
+    },
+    {
+      hi: '20+',
+      label: 'Production features',
+      desc: 'Delivered across HRMS, health, fleet, invoice, security, careers, incident management and approvals.'
+    },
+    {
+      hi: '3',
+      label: 'Product surfaces',
+      desc: 'Worked across a multi-tenant enterprise platform, a CapEx approval product, and a multilingual voice-AI project.'
+    },
+    {
+      hi: '13 yrs',
+      label: 'CS teaching foundation',
+      desc: 'Former Computer Science lecturer and HOD, bringing clear communication, mentoring and fundamentals into engineering work.'
+    },
+  ];
+
+  projects: Project[] = [
+    {
+      id: 'clinical',
+      cat: 'AI + Health',
+      name: 'AI Clinical Assistant',
+      badge: 'OpenAI',
+      featured: true,
+      desc: 'Contextual clinical support for doctors with prescription-template suggestions, structured validation and required doctor review.',
+      proof: 'First production AI feature in the product.',
+      tech: ['OpenAI', 'Spring Boot', 'Angular', 'Validation'],
+      caseStudy: {
+        problem: 'Doctors were losing consultation time to repetitive documentation, and the product had no AI assistance.',
+        approach: [
+          'Designed the prompt, model, validation and review pipeline from scratch.',
+          'Parsed structured model output and checked it against product rules before use.',
+          'Kept doctor review mandatory so AI output is never blindly persisted.',
+          'Integrated the feature cleanly into the multi-tenant Spring Boot backend and Angular UI.'
+        ],
+        outcome: 'Shipped AI-assisted clinical suggestions with a human safety checkpoint and a reusable pattern for future AI work.'
+      }
+    },
+    {
+      id: 'vision',
+      cat: 'AI + Vision',
+      name: 'Vision Data Capture',
+      badge: 'Field Ops',
+      featured: true,
+      desc: 'Reads odometer and fuel-receipt data from field photos into structured records, reducing manual logging.',
+      proof: 'Replaced repetitive field data entry with verified extraction.',
+      tech: ['OpenAI Vision', 'Spring Boot', 'AWS', 'Audit'],
+      caseStudy: {
+        problem: 'Field staff manually entered odometer readings and fuel receipts, which was slow and error-prone.',
+        approach: [
+          'Built an upload, extraction, validation and fallback workflow.',
+          'Extracted structured fields including reading, amount and date from images.',
+          'Added low-confidence fallback paths instead of treating model output as guaranteed truth.',
+          'Stored originals for audit and connected the workflow to Spring Boot services.'
+        ],
+        outcome: 'Created a practical computer-vision workflow that saves operations time while preserving reviewability.'
+      }
+    },
+    {
+      id: 'capex',
+      cat: 'Finance',
+      name: 'Capital-Expenditure Approval Platform',
+      badge: 'Spring Boot 3',
+      featured: true,
+      desc: 'Configurable multi-level approvals, budget tracking and a tamper-evident audit trail for CapEx decisions.',
+      proof: 'A full product-grade workflow, not a demo screen.',
+      tech: ['Java 17', 'Spring Boot 3', 'React', 'SQL Server'],
+      caseStudy: {
+        problem: 'CapEx approvals needed configurable routing, budget visibility and verifiable history.',
+        approach: [
+          'Built amount-slab routing with parallel approvers and completion rules.',
+          'Tracked commitment and budget consumption through the approval lifecycle.',
+          'Designed an audit trail for every action and status change.',
+          'Delivered backend and frontend across a multi-tenant product surface.'
+        ],
+        outcome: 'A robust approval product that demonstrates architecture, workflow modelling and end-to-end delivery.'
+      }
+    },
+    {
+      id: 'voice',
+      cat: 'AI + Exploration',
+      name: 'Conversational Voice-AI Agent',
+      badge: 'RAG',
+      featured: true,
+      desc: 'A multilingual voice agent exploring real-time speech, retrieval grounding and agentic orchestration.',
+      proof: 'Hands-on growth project for the next generation of AI apps.',
+      tech: ['LangGraph', 'Gemini', 'RAG', 'Python'],
+      caseStudy: {
+        problem: 'I wanted to learn agentic, real-time voice AI by building a realistic assistant rather than only reading docs.',
+        approach: [
+          'Modelled the agent as a LangGraph state machine with guard nodes.',
+          'Grounded responses with retrieval to reduce unsupported answers.',
+          'Added speech-to-speech flow with fallback handling.',
+          'Focused on reliability around the model call: state, memory, grounding and review.'
+        ],
+        outcome: 'A practical learning path into LLM apps, RAG and agentic systems.'
+      }
+    },
+    {
+      id: 'hrms',
+      cat: 'HRMS',
+      name: 'Employee Onboarding',
+      desc: 'Client and unit mapping, roles, permissions, user hierarchy and policy setup across the HR module.',
+      proof: 'Reduced setup friction in a multi-tenant HR workflow.',
+      tech: ['Spring Boot', 'Angular', 'JWT', 'RBAC'],
+      caseStudy: {
+        problem: 'Onboarding needed correct mapping, role assignment and policy setup without off-system handling.',
+        approach: [
+          'Built onboarding flows with client and unit mapping.',
+          'Modelled hierarchy, policy management and role assignment.',
+          'Enforced tenant-aware access using JWT and RBAC.',
+          'Delivered APIs and Angular screens end to end.'
+        ],
+        outcome: 'A streamlined onboarding module where users land with the correct structure and permissions.'
+      }
+    },
+    {
+      id: 'incident',
+      cat: 'Operations',
+      name: 'Incident Management',
+      desc: 'Assignment groups, Kanban workflow, status audit trail and exportable reports for operations teams.',
+      proof: 'Turned ad-hoc incident tracking into an auditable workflow.',
+      tech: ['Spring Boot', 'Angular', 'MySQL', 'Reports'],
+      caseStudy: {
+        problem: 'Teams needed a structured way to log, assign, track and audit incidents.',
+        approach: [
+          'Built assignment groups and routing.',
+          'Implemented a Kanban status flow from new to closed.',
+          'Recorded every transition with actor and timestamp.',
+          'Added exportable reports for review and compliance.'
+        ],
+        outcome: 'An operational workflow with clear ownership, visibility and auditability.'
+      }
+    },
+    {
+      id: 'patrol',
+      cat: 'Security',
+      name: 'Field Patrol Compliance',
+      desc: 'GPS checkpoint capture, Google Maps route views and PDF exports for SLA evidence.',
+      proof: 'Made field visits visible, verifiable and reportable.',
+      tech: ['Google Maps', 'Spring Boot', 'Angular', 'PDF'],
+      caseStudy: {
+        problem: 'Security teams needed proof that checkpoint visits happened on time and in the right place.',
+        approach: [
+          'Captured GPS coordinates and timestamps at patrol scans.',
+          'Displayed visits on Google Maps for route-level review.',
+          'Generated PDF reports for SLA and compliance evidence.',
+          'Integrated the UI and APIs within the platform workflow.'
+        ],
+        outcome: 'Location-verified patrol reporting that supports audits and client confidence.'
+      }
+    },
+    {
+      id: 'kyc',
+      cat: 'KYC',
+      name: 'Identity Verification Framework',
+      desc: 'Unified third-party verification for 10+ Indian identity documents with matching and face verification.',
+      proof: 'One secure integration pattern for many document types.',
+      tech: ['Spring Boot', 'AWS', 'REST APIs', 'Security'],
+      caseStudy: {
+        problem: 'Identity checks were fragmented across many document types and needed a reliable integration model.',
+        approach: [
+          'Created a unified service layer over the verification provider.',
+          'Supported 10+ Indian identity documents behind one consistent API.',
+          'Added name matching and face verification for stronger checks.',
+          'Handled verified records with secure API and persistence patterns.'
+        ],
+        outcome: 'A reusable identity-verification framework for multiple document workflows.'
+      }
+    }
+  ];
+
+  expertise: Capability[] = [
+    {
+      title: 'Backend Architecture',
+      blurb: 'REST APIs, JPA/Hibernate, tenant-aware design, JWT/RBAC, query tuning, Redis caching and production debugging.',
+      chips: ['Java', 'Spring Boot', 'JPA', 'Hibernate', 'MySQL', 'Redis', 'JWT']
+    },
+    {
+      title: 'Enterprise Frontend',
+      blurb: 'Angular interfaces for dense operational workflows: forms, boards, tables, validation, exports and role-based views.',
+      chips: ['Angular', 'TypeScript', 'RxJS', 'HTML', 'CSS', 'Bootstrap']
+    },
+    {
+      title: 'AI Product Integration',
+      blurb: 'OpenAI and Gemini integrations shaped around validation, structured outputs, fallback paths and human review.',
+      chips: ['OpenAI', 'Gemini', 'RAG', 'LangGraph', 'Prompt Design']
+    },
+    {
+      title: 'Communication',
+      blurb: 'A teaching background that helps in code reviews, mentoring, requirement translation and clear technical discussion.',
+      chips: ['Mentoring', 'CS Fundamentals', 'Review', 'Documentation']
+    }
+  ];
 
   stack: Tech[] = [
     { name: 'Java', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
@@ -137,288 +334,251 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     { name: 'Python', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
     { name: 'MySQL', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
     { name: 'Redis', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg' },
-    { name: 'Git', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
+    { name: 'Git', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' }
   ];
 
-  intro =
-    `I'm a backend-first full-stack developer (Java · Spring Boot · Angular) with 5+ years building a ` +
-    `multi-tenant enterprise SaaS platform end to end: database, Spring Boot APIs and Angular UIs, across ` +
-    `HR, health, fleet, invoicing and security. I shipped the product's first production AI features and ` +
-    `I'm now going deeper into agentic AI and RAG.`;
-
-  stats: Stat[] = [
-    { n: '5+', l: 'Years building SaaS' },
-    { n: '20+', l: 'Production features' },
-    { n: '2', l: 'AI systems in production' },
-    { n: '3', l: 'products shipped' },
-  ];
-  // count-up display (starts at 0 for numeric stats, animated into view)
-  statDisplay: string[] = this.stats.map(s => /^\d/.test(s.n) ? '0' + s.n.replace(/^\d+/, '') : s.n);
-
-  private animateStats(): void {
-    const dur = 1100, start = performance.now();
-    const targets = this.stats.map(s => {
-      const m = /^(\d+)(.*)$/.exec(s.n);
-      return m ? { num: +m[1], suffix: m[2], text: null as string | null } : { num: 0, suffix: '', text: s.n };
-    });
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - start) / dur);
-      const e = 1 - Math.pow(1 - p, 3); // easeOutCubic
-      this.statDisplay = targets.map(t => t.text !== null ? t.text : Math.round(t.num * e) + t.suffix);
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
-
-  // premium cursor-follow spotlight on cards
-  onCardMove(e: MouseEvent): void {
-    const el = e.currentTarget as HTMLElement;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-    el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-  }
-  onCardLeave(e: MouseEvent): void {
-    (e.currentTarget as HTMLElement).style.setProperty('--mx', '-300px');
-  }
-
-  // hero portrait micro-parallax (max ~3deg), driven by CSS custom props
-  onHeroMove(e: MouseEvent): void {
-    const el = e.currentTarget as HTMLElement;
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.setProperty('--rx', (px * 6).toFixed(2) + 'deg');
-    el.style.setProperty('--ry', (-py * 6).toFixed(2) + 'deg');
-  }
-  onHeroLeave(e: MouseEvent): void {
-    const el = e.currentTarget as HTMLElement;
-    el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg');
-  }
-
-  // section rail (desktop) — nav items + contact
-  get railItems(): { id: string; label: string }[] {
-    return [...this.navItems, { id: 'contact', label: 'Contact' }];
-  }
-
-  // bespoke line-icon glyph per project category (SVG sprite ids in the template)
-  glyphFor(p: Project): string {
-    const c = p.cat.toLowerCase();
-    if (c.includes('health')) return 'pulse';
-    if (c.includes('vision')) return 'lens';
-    if (c.includes('finance')) return 'stamp';
-    if (c.includes('exploration') || c.includes('voice')) return 'wave';
-    if (c.includes('hrms')) return 'users';
-    if (c.includes('operations')) return 'board';
-    if (c.includes('security')) return 'pin';
-    if (c.includes('kyc')) return 'id';
-    if (c === 'hr') return 'brief';
-    return 'dot';
-  }
-
-  // live Hyderabad time in the footer
-  hydTime = '';
-  private timer: ReturnType<typeof setInterval> | null = null;
-  private tickTime(): void {
-    try {
-      this.hydTime = new Intl.DateTimeFormat('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' })
-        .format(new Date()).toUpperCase();
-    } catch { this.hydTime = ''; }
-  }
-  ngOnDestroy(): void { if (this.timer) clearInterval(this.timer); }
-
-  expertise: Capability[] = [
-    { title: 'Backend Engineering',
-      blurb: 'Design and build Java / Spring Boot services: REST APIs, JPA/Hibernate, and performance tuning (N+1 fixes, Redis caching) on a multi-tenant, JWT-secured platform.',
-      chips: ['Java', 'Spring Boot', 'Spring Data JPA', 'Hibernate', 'REST APIs', 'JWT', 'MySQL', 'Redis'] },
-    { title: 'AI Integration',
-      blurb: 'Shipped the product\'s first production AI (OpenAI) and building agentic AI, with structured-output validation, RAG and human-in-the-loop as first-class concerns.',
-      chips: ['OpenAI', 'Google Gemini', 'RAG', 'LangGraph', 'Prompt Engineering'] },
-    { title: 'Full-Stack Delivery',
-      blurb: 'Own features end to end: database schema → Spring Boot APIs → Angular UIs. Comfortable in React and Python/FastAPI when a project calls for it.',
-      chips: ['Angular', 'TypeScript', 'RxJS', 'React', 'Python / FastAPI', 'HTML5 / CSS3'] },
-    { title: 'Foundations & Communication',
-      blurb: 'A decade teaching Computer Science (as HOD) means I explain complex systems simply, whether in design discussions, code reviews or mentoring.',
-      chips: ['System Thinking', 'Mentoring', 'Code Review', 'CS Fundamentals'] },
-  ];
-
-  impact: Impact[] = [
-    { hi: 'AI-first', title: 'Brought AI into the product', desc: 'Introduced OpenAI to the platform: a clinical assistant and a vision pipeline that reads odometer and fuel data from field photos.' },
-    { hi: 'Near-zero', title: 'Manual data entry', desc: 'A computer-vision feature captures field-photo data automatically, replacing repetitive manual logging.' },
-    { hi: 'Faster', title: 'APIs & reports', desc: 'Resolved N+1 query bottlenecks with JOIN FETCH / projections and added Redis caching for hot, frequently-read data.' },
-    { hi: '20+', title: 'Features · 3 products', desc: 'Delivered end-to-end across HR, fleet, health, invoice and security, plus a capital-expenditure approval platform and a voice-AI agent.' },
-  ];
-
-  learning: string[] = [
-    'LLM App Development', 'RAG (Retrieval-Augmented Generation)', 'Agentic AI · LangGraph',
-    'OpenAI & Google Gemini APIs', 'Prompt Engineering', 'AWS & Docker',
-  ];
-
-  projects: Project[] = [
-    { cat: 'AI · Health', icon: '🩺', name: 'AI Clinical Assistant', badge: 'OpenAI', featured: true,
-      desc: 'The platform\'s first AI feature: contextual clinical support for doctors plus AI-suggested prescription templates, engineered with validation and doctor review before anything is saved.',
-      tech: ['OpenAI', 'Spring Boot', 'Angular'],
-      caseStudy: {
-        problem: 'Doctors spent consultation time on repetitive documentation, and the product had no AI assistance at all.',
-        approach: [
-          'As the first engineer to bring AI into the product, designed a request → prompt → model → validation → review pipeline.',
-          'Engineered structured-output parsing and business-rule validation so results are checked, not trusted blindly.',
-          'Kept a mandatory doctor-review step, so AI output is never persisted unverified.',
-          'Integrated cleanly into the multi-tenant Spring Boot backend and Angular UI.',
-        ],
-        outcome: 'Shipped the product\'s first production AI feature: AI-assisted suggestions with a human safety checkpoint.',
-      } },
-    { cat: 'AI · Vision', icon: '🚚', name: 'AI Vision Data Capture', badge: 'OpenAI', featured: true,
-      desc: 'Reads odometer and fuel-receipt data straight from field photos into validated, structured records, removing manual data entry.',
-      tech: ['OpenAI Vision', 'Spring Boot', 'AWS'],
-      caseStudy: {
-        problem: 'Field staff logged odometer readings and fuel receipts by hand, which was slow, tedious and error-prone.',
-        approach: [
-          'Built an image-upload → vision-extraction → validation pipeline.',
-          'Extracted structured fields (reading, amount, date) from photos via OpenAI vision.',
-          'Added confidence checks with a manual fallback for low-confidence captures.',
-          'Stored originals for audit and wired the flow to Spring Boot + AWS.',
-        ],
-        outcome: 'Automated data capture from field photos, removing repetitive manual logging for the operations team.',
-      } },
-    { cat: 'Finance', icon: '💰', name: 'Capital-Expenditure Approval Platform', badge: 'Spring Boot 3', featured: true,
-      desc: 'A capital-expenditure approval product with a configurable multi-level engine, budget tracking, and a tamper-evident, verifiable audit trail.',
-      tech: ['Spring Boot 3', 'Java 17', 'React', 'SQL Server'],
-      caseStudy: {
-        problem: 'Capital-expenditure approvals needed configurable multi-level routing with a tamper-evident, verifiable audit trail.',
-        approach: [
-          'Built a configurable multi-level approval engine with amount-slab routing, parallel approvers and completion rules.',
-          'Implemented budget tracking that flows from commitment into consumption as approvals progress.',
-          'Designed a tamper-evident, verifiable audit trail for every action.',
-          'Delivered end-to-end on Spring Boot 3 / Java 17 (SQL Server) with a React frontend, multi-tenant.',
-        ],
-        outcome: 'A product that proves end-to-end delivery across a robust backend and a modern frontend.',
-      } },
-    { cat: 'AI · Exploration', icon: '🎙️', name: 'Conversational Voice-AI Agent', featured: true,
-      desc: 'A hands-on project: a multilingual voice agent exploring agentic AI: LLM orchestration, real-time speech and retrieval-augmented generation (RAG).',
-      tech: ['LangGraph', 'Gemini', 'RAG', 'Python'],
-      caseStudy: {
-        problem: 'I wanted to master agentic, real-time voice AI hands-on, on a realistic conversational problem.',
-        approach: [
-          'Built a multilingual voice agent using a LangGraph state machine with guard nodes and anti-hallucination checks.',
-          'Real-time speech-to-speech with a cascade fallback for reliability.',
-          'Retrieval-augmented generation (RAG) over a vector store to ground answers in real data.',
-          'Focused on the reliability engineering around the model, not just the model call.',
-        ],
-        outcome: 'A hands-on route to mastering LLMs, RAG and agentic AI, my current growth area.',
-      } },
-    { cat: 'HRMS', icon: '👥', name: 'HRMS & Employee Onboarding',
-      desc: 'User onboarding with client/unit mapping, roles & permissions, user hierarchy and policy management across the HR module.',
-      tech: ['Spring Boot', 'Angular', 'JWT'],
-      caseStudy: {
-        problem: 'Onboarding users at scale needed correct client/unit mapping, role assignment and policy setup, which was slow and error-prone when handled manually.',
-        approach: [
-          'Built the onboarding flow with client/unit mapping and role & permission assignment.',
-          'Modelled the user hierarchy and policy management within the HR module.',
-          'Enforced access with JWT + RBAC on the multi-tenant platform.',
-          'Delivered the Angular screens and Spring Boot APIs end-to-end.',
-        ],
-        outcome: 'A streamlined onboarding module that maps each user to the right client, unit, roles and policies from day one.',
-      } },
-    { cat: 'Operations', icon: '🚨', name: 'Incident Management',
-      desc: 'Assignment groups, a Kanban board, status/audit trail and exportable reports on the multi-tenant platform.',
-      tech: ['Spring Boot', 'Angular', 'MySQL'],
-      caseStudy: {
-        problem: 'Teams needed a structured way to log, assign, track and audit operational incidents instead of ad-hoc handling.',
-        approach: [
-          'Built assignment groups and routing so incidents reach the right owners.',
-          'Implemented a Kanban board for the status flow (New → Assigned → In Progress → Resolved → Closed).',
-          'Added a status/audit trail so every transition is recorded with who and when.',
-          'Provided exportable reports for review and compliance.',
-        ],
-        outcome: 'An end-to-end incident workflow with a visual board and a complete audit trail on the multi-tenant platform.',
-      } },
-    { cat: 'Security', icon: '🛡️', name: 'Field Patrol & Compliance Reporting',
-      desc: 'GPS and Google Maps routing with PDF export, used as SLA-audit evidence for field-security compliance.',
-      tech: ['Google Maps', 'Spring Boot', 'Angular'],
-      caseStudy: {
-        problem: 'Field-security operations needed verifiable proof that guards actually visited each checkpoint, for SLA audits.',
-        approach: [
-          'Captured GPS coordinates + timestamp at each patrol scan as tamper-resistant proof.',
-          'Plotted the visit route on Google Maps for a clear visual record.',
-          'Generated exportable PDF reports for SLA-audit evidence.',
-          'Delivered the Angular UI and Spring Boot APIs end-to-end.',
-        ],
-        outcome: 'Location-verified patrol reports used as SLA and compliance evidence.',
-      } },
-    { cat: 'KYC', icon: '🪪', name: 'Identity Verification (KYC)',
-      desc: 'A unified integration for third-party identity verification across 10+ Indian identity documents, with name-matching and face verification.',
-      tech: ['Spring Boot', 'AWS', 'REST APIs'],
-      caseStudy: {
-        problem: 'Verifying identity required checking many different Indian documents reliably and consistently, which was hard to do one integration at a time.',
-        approach: [
-          'Integrated a third-party verification provider into a single, unified framework.',
-          'Supported 10+ Indian identity documents behind one consistent API.',
-          'Added name-matching and face verification for stronger identity checks.',
-          'Persisted verified records with hardened, secure API handling.',
-        ],
-        outcome: 'One framework that verifies 10+ identity documents with name-matching and face checks.',
-      } },
-    { cat: 'HR', icon: '💼', name: 'Careers Management',
-      desc: 'A careers module for the platform: create and manage job openings and applications end to end.',
-      tech: ['Spring Boot', 'Angular', 'MySQL'],
-      caseStudy: {
-        problem: 'The platform needed a single place to publish job openings and manage applications, rather than tracking them off-system.',
-        approach: [
-          'Built CRUD for job openings with their fields and lifecycle.',
-          'Managed applications end-to-end against each opening.',
-          'Delivered Spring Boot APIs and an Angular UI integrated with the platform.',
-        ],
-        outcome: 'A self-contained careers module for creating openings and handling applications end-to-end.',
-      } },
+  learning = [
+    'LLM application architecture',
+    'RAG and retrieval quality',
+    'Agentic workflows with LangGraph',
+    'OpenAI and Google Gemini APIs',
+    'Docker and AWS deployment',
+    'Production observability'
   ];
 
   experience: Job[] = [
     {
       role: 'Full-Stack Developer',
-      org: 'AITITUDE IT Pvt Ltd · Product Company · Multi-Tenant Enterprise SaaS',
-      period: 'Feb 2021 – Present · Hyderabad',
+      org: 'AITITUDE IT Pvt Ltd - Product Company',
+      period: 'Feb 2021 - Present, Hyderabad',
       points: [
-        'Introduced the platform\'s first AI features (OpenAI): an AI clinical assistant and a computer-vision data-capture feature.',
-        'Built HR onboarding, careers, incident-management, field-patrol, attendance and invoicing features end-to-end.',
-        'Delivered 20+ production features across HR, Fleet, Health, Invoice and Security modules.',
-        'Built features within the platform\'s multi-tenant, JWT-secured architecture (tenant isolation, RBAC).',
-        'Performance tuning: resolved N+1 queries (JOIN FETCH / projections) and added Redis caching.',
-        'Part of the team that migrated the platform from Angular 16 to 19 (AdminLTE 4 + Bootstrap 5).',
-      ],
+        'Introduced the platform\'s first AI features using OpenAI: a clinical assistant and a field-photo vision capture workflow.',
+        'Delivered 20+ production features across HR, fleet, health, invoice, security, careers and incident modules.',
+        'Built features end to end within a multi-tenant, JWT-secured platform with RBAC and tenant isolation.',
+        'Improved API and report performance by resolving N+1 query issues and adding Redis caching for hot paths.',
+        'Contributed to platform modernization from Angular 16 to Angular 19 with AdminLTE 4 and Bootstrap 5.'
+      ]
     },
     {
-      role: 'Lecturer & Head of Department, Computer Science',
-      org: 'Suvidya Degree College & Sri Chaitanya',
-      period: '2008 – 2021 · Telangana',
+      role: 'Lecturer and HOD, Computer Science',
+      org: 'Suvidya Degree College and Sri Chaitanya',
+      period: '2008 - 2021, Telangana',
       points: [
-        'Taught Java, C and Visual Basic to hundreds of students; led the CS department as HOD.',
-        'The foundation of strong fundamentals, communication and leadership behind a deliberate move into software engineering.',
-      ],
-    },
+        'Taught Java, C and Visual Basic to hundreds of students and led the Computer Science department.',
+        'Built the communication, fundamentals and mentoring foundation behind a deliberate move into software engineering.'
+      ]
+    }
   ];
+
+  constructor() {
+    try {
+      const saved = localStorage.getItem('mtr-theme') as 'dark' | 'light' | null;
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.theme = saved ?? (prefersDark ? 'dark' : 'light');
+    } catch {
+      this.theme = 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', this.theme);
+  }
+
+  get featuredProjects(): Project[] {
+    return this.projects.filter((project) => project.featured);
+  }
+
+  get moreProjects(): Project[] {
+    return this.projects.filter((project) => !project.featured);
+  }
+
+  toggleTheme(): void {
+    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', this.theme);
+    try {
+      localStorage.setItem('mtr-theme', this.theme);
+    } catch {
+      // Local storage may be unavailable in private contexts.
+    }
+  }
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
+  }
+
+  copyEmail(): void {
+    try {
+      navigator.clipboard.writeText(this.email);
+      this.copied = true;
+      setTimeout(() => (this.copied = false), 1700);
+    } catch {
+      this.copied = false;
+    }
+  }
+
+  onPhotoError(): void {
+    this.photoOk = false;
+  }
+
+  openCase(project: Project, ev: Event): void {
+    this.lastFocused = ev.currentTarget as HTMLElement;
+    this.openProject = project;
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => (this.host.nativeElement.querySelector('.modal-close') as HTMLElement | null)?.focus(), 0);
+  }
+
+  closeCase(): void {
+    this.openProject = null;
+    document.body.style.overflow = '';
+    this.lastFocused?.focus();
+  }
+
+  onModalKeydown(e: KeyboardEvent): void {
+    if (e.key !== 'Tab') {
+      return;
+    }
+
+    const modal = this.host.nativeElement.querySelector('.modal') as HTMLElement | null;
+    if (!modal) {
+      return;
+    }
+
+    const nodes = Array.from(
+      modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')
+    ) as HTMLElement[];
+    if (!nodes.length) {
+      return;
+    }
+
+    const first = nodes[0];
+    const last = nodes[nodes.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && active === first) {
+      last.focus();
+      e.preventDefault();
+    } else if (!e.shiftKey && active === last) {
+      first.focus();
+      e.preventDefault();
+    }
+  }
+
+  onCardMove(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+    el.style.setProperty('--my', `${e.clientY - rect.top}px`);
+  }
+
+  onCardLeave(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    el.style.setProperty('--mx', '-500px');
+    el.style.setProperty('--my', '-500px');
+  }
+
+  onHeroMove(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.setProperty('--hero-x', `${(x * 10).toFixed(2)}px`);
+    el.style.setProperty('--hero-y', `${(y * 10).toFixed(2)}px`);
+    el.style.setProperty('--rx', `${(x * 5).toFixed(2)}deg`);
+    el.style.setProperty('--ry', `${(-y * 5).toFixed(2)}deg`);
+  }
+
+  onHeroLeave(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    el.style.setProperty('--hero-x', '0px');
+    el.style.setProperty('--hero-y', '0px');
+    el.style.setProperty('--rx', '0deg');
+    el.style.setProperty('--ry', '0deg');
+  }
+
+  iconFor(project: Project): string {
+    const cat = project.cat.toLowerCase();
+    if (cat.includes('health')) return 'pulse';
+    if (cat.includes('vision')) return 'scan';
+    if (cat.includes('finance')) return 'flow';
+    if (cat.includes('exploration')) return 'voice';
+    if (cat.includes('hrms')) return 'people';
+    if (cat.includes('operations')) return 'board';
+    if (cat.includes('security')) return 'pin';
+    if (cat.includes('kyc')) return 'shield';
+    return 'spark';
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    if (this.openProject) {
+      this.closeCase();
+    } else if (this.menuOpen) {
+      this.closeMenu();
+    }
+  }
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    const el = document.documentElement;
+    const max = el.scrollHeight - el.clientHeight;
+    this.scrollProgress = max > 0 ? (el.scrollTop / max) * 100 : 0;
+
+    const cursor = el.scrollTop + 130;
+    let current = 'top';
+    for (const id of this.sections) {
+      const section = document.getElementById(id);
+      if (section && section.offsetTop <= cursor) {
+        current = id;
+      }
+    }
+    this.activeSection = current;
+  }
 
   ngAfterViewInit(): void {
     this.tickTime();
     this.timer = setInterval(() => this.tickTime(), 30000);
-    const els = this.host.nativeElement.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.12 });
-    els.forEach((el: Element) => io.observe(el));
+    this.onScroll();
+    this.initReveal();
+  }
 
-    // count-up when the stats strip scrolls into view
-    const statsEl = this.host.nativeElement.querySelector('.stats');
-    if (statsEl) {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { this.statDisplay = this.stats.map(s => s.n); }
-      else {
-        const so = new IntersectionObserver((ents) => {
-          ents.forEach(en => { if (en.isIntersecting) { this.animateStats(); so.disconnect(); } });
-        }, { threshold: 0.4 });
-        so.observe(statsEl);
-      }
+  ngOnDestroy(): void {
+    if (this.timer) {
+      clearInterval(this.timer);
     }
+    this.observers.forEach((observer) => observer.disconnect());
+  }
+
+  private tickTime(): void {
+    try {
+      this.hydTime = new Intl.DateTimeFormat('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Kolkata'
+      }).format(new Date()).toUpperCase();
+    } catch {
+      this.hydTime = '';
+    }
+  }
+
+  private initReveal(): void {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealEls = this.host.nativeElement.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) {
+      revealEls.forEach((el: Element) => el.classList.add('in-view'));
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach((el: Element) => revealObserver.observe(el));
+    this.observers.push(revealObserver);
   }
 }

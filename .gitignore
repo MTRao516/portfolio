@@ -38,5 +38,6 @@ Thumbs.db
 lh*.json
 lh.json
 npm-debug.log
+ng-serve*.log
 testem.log
 yarn-error.log
