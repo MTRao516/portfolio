@@ -25,7 +25,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   name = 'Murala Thirupathi';
   alias = 'MTR';
-  tagline = 'Java · Spring Boot · Angular — and the engineer who brought AI into the product.';
+  tagline = 'Java · Spring Boot · Angular · AI Integration';
   email = 'thirupathiraomurala@gmail.com';
   phone = '+91 96400 46001';
   location = 'Hyderabad, Telangana · Open to new roles — Hybrid or Remote';
