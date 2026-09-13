@@ -120,24 +120,15 @@ strong { color:var(--strong); font-weight:700; }
 .hero-photo .cap-chip::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); }
 
 /* buttons */
-.cta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.cta { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
 .btn,.btn-outline { padding:13px 22px; border-radius:9px; font-weight:700; font-size:14.5px; letter-spacing:.01em;
   transition:transform .18s, background .2s, border-color .2s, color .2s, box-shadow .25s; display:inline-flex; align-items:center; gap:10px; cursor:pointer; font-family:var(--body); }
 .btn { background:var(--btn-bg); color:var(--btn-ink); border:1px solid var(--btn-bg); }
 .btn::after { content:'→'; transition:transform .2s; }
 .btn:hover { transform:translateY(-2px); box-shadow:0 14px 28px -16px rgba(0,0,0,.45); }
 .btn:hover::after { transform:translateX(4px); }
-.btn-outline { border:1px solid var(--line2); color:var(--ink); background:transparent; padding:13px 17px; }
+.btn-outline { border:1px solid var(--line2); color:var(--ink); background:transparent; }
 .btn-outline:hover { transform:translateY(-2px); border-color:var(--accent); color:var(--accent); }
-/* résumé download — the action recruiters look for first */
-.btn-resume { padding:13px 19px; border-radius:9px; font-weight:700; font-size:14.5px; font-family:var(--body);
-  display:inline-flex; align-items:center; gap:8px; cursor:pointer; color:var(--accent-ink); white-space:nowrap;
-  background:var(--accent-soft); border:1px solid var(--accent-line);
-  transition:transform .18s, background .2s, border-color .2s, box-shadow .25s; }
-.btn-resume:hover { transform:translateY(-2px); border-color:var(--accent); box-shadow:0 12px 24px -16px var(--accent-line); }
-.btn-resume svg { transition:transform .25s cubic-bezier(.2,.75,.2,1); }
-.btn-resume:hover svg { transform:translateY(2px); }
-@media (prefers-reduced-motion:reduce) { .btn-resume, .btn-resume svg { transition:none; } }
 
 /* stats — serif numerals, mono labels, ruled */
 .stats { display:grid; grid-template-columns:repeat(4,auto); gap:0 40px; margin-top:44px; padding-top:26px; border-top:1px solid var(--line); }
