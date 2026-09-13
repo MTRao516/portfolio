@@ -85,19 +85,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private lastFocused: HTMLElement | null = null;
   private observers: IntersectionObserver[] = [];
 
-  sections = ['top', 'proof', 'work', 'craft', 'trajectory', 'experience', 'contact'];
+  sections = ['top', 'work', 'proof', 'craft', 'experience', 'trajectory', 'contact'];
   navItems = [
-    { id: 'proof', label: 'Proof' },
     { id: 'work', label: 'Work' },
+    { id: 'proof', label: 'Proof' },
     { id: 'craft', label: 'Craft' },
-    { id: 'trajectory', label: 'Growth' },
     { id: 'experience', label: 'Experience' },
+    { id: 'trajectory', label: 'Next' },
   ];
 
   headline = 'Murala Thirupathi';
 
   roleLine =
-    'Backend-first full-stack developer turning complex enterprise workflows into fast, reliable SaaS.';
+    'I turn complex enterprise workflows into software that stays fast and correct in production.';
 
   intro =
     'I build Java, Spring Boot and Angular products end to end across HR, health, fleet, invoicing and security. At AITITUDE IT I shipped the product\'s first production AI features, tuned slow APIs and reports, and turned complex business rules into software teams use every day.';

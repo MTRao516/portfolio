@@ -103,36 +103,17 @@
       </div>
     </div>
   </section>
-
-  <section id="proof" class="section proof" aria-labelledby="h-proof">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="kicker">01 / Recruiter proof</span>
-        <h2 id="h-proof">The reasons to shortlist me.</h2>
-      </div>
-
-      <div class="impact-grid">
-        <article class="impact-card reveal" *ngFor="let item of impact; let i = index" [style.transition-delay.ms]="i * 60"
-          (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
-          <strong>{{ item.hi }}</strong>
-          <h3>{{ item.label }}</h3>
-          <p>{{ item.desc }}</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <section id="work" class="section work" aria-labelledby="h-work">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">02 / Case studies</span>
-        <h2 id="h-work">Selected work with business context.</h2>
-        <p>Each project highlights the problem, the engineering choices, and why it mattered in production.</p>
+        <span class="kicker">01 / Case studies</span>
+        <h2 id="h-work">Selected work, with the business context.</h2>
+        <p>Each one states the problem, the engineering decisions I made, and what it changed.</p>
       </div>
 
       <div class="featured-grid">
         <article class="project-card reveal" *ngFor="let project of featuredProjects; let i = index"
-          [style.transition-delay.ms]="i * 70" (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
+          [style.transition-delay.ms]="i * 40" (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
           <div class="project-top">
             <span class="project-cat">
               <svg class="glyph" aria-hidden="true"><use [attr.href]="'#i-' + iconFor(project)"></use></svg>
@@ -168,16 +149,32 @@
       </div>
     </div>
   </section>
+  <section id="proof" class="section proof" aria-labelledby="h-proof">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">02 / Recruiter proof</span>
+        <h2 id="h-proof">The reasons to shortlist me.</h2>
+      </div>
 
+      <div class="impact-grid">
+        <article class="impact-card reveal" *ngFor="let item of impact; let i = index" [style.transition-delay.ms]="i * 40"
+          (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
+          <strong>{{ item.hi }}</strong>
+          <h3>{{ item.label }}</h3>
+          <p>{{ item.desc }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
   <section id="craft" class="section craft" aria-labelledby="h-craft">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">03 / Craft</span>
-        <h2 id="h-craft">The working style behind the output.</h2>
+        <span class="kicker">03 / How I work</span>
+        <h2 id="h-craft">How I work.</h2>
       </div>
 
       <div class="craft-grid">
-        <article class="capability reveal" *ngFor="let item of expertise; let i = index" [style.transition-delay.ms]="i * 70">
+        <article class="capability reveal" *ngFor="let item of expertise; let i = index" [style.transition-delay.ms]="i * 40">
           <h3>{{ item.title }}</h3>
           <p>{{ item.blurb }}</p>
           <div class="tags compact">
@@ -191,29 +188,15 @@
       </div>
     </div>
   </section>
-
-  <section id="trajectory" class="section trajectory" aria-labelledby="h-growth">
-    <div class="wrap trajectory-grid">
-      <div class="section-head reveal">
-        <span class="kicker">04 / Growth vector</span>
-        <h2 id="h-growth">Learning where software is moving next.</h2>
-        <p>I am going deeper into production-grade AI: retrieval quality, tool use, stateful agents, voice interfaces and the engineering discipline around model output.</p>
-      </div>
-      <div class="learning-board reveal">
-        <span *ngFor="let item of learning">{{ item }}</span>
-      </div>
-    </div>
-  </section>
-
   <section id="experience" class="section experience" aria-labelledby="h-experience">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">05 / Experience</span>
+        <span class="kicker">04 / Track record</span>
         <h2 id="h-experience">Five-plus years shipping production software.</h2>
       </div>
 
       <div class="timeline">
-        <article class="job reveal" *ngFor="let job of experience; let i = index" [style.transition-delay.ms]="i * 80">
+        <article class="job reveal" *ngFor="let job of experience; let i = index" [style.transition-delay.ms]="i * 40">
           <div class="job-head">
             <h3>{{ job.role }}</h3>
             <span>{{ job.period }}</span>
@@ -226,7 +209,18 @@
       </div>
     </div>
   </section>
-
+  <section id="trajectory" class="section trajectory" aria-labelledby="h-growth">
+    <div class="wrap trajectory-grid">
+      <div class="section-head reveal">
+        <span class="kicker">05 / Where I invest next</span>
+        <h2 id="h-growth">Where I invest next.</h2>
+        <p>Going deeper into production-grade AI: retrieval quality, tool use, stateful agents, and the engineering discipline that makes model output safe to ship.</p>
+      </div>
+      <div class="learning-board reveal">
+        <span *ngFor="let item of learning">{{ item }}</span>
+      </div>
+    </div>
+  </section>
   <section id="contact" class="section contact" aria-labelledby="h-contact">
     <div class="wrap contact-inner reveal">
       <span class="kicker">06 / Contact</span>
