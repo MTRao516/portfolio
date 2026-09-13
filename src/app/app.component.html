@@ -39,12 +39,10 @@
 <main>
 <!-- HERO -->
 <section id="top" class="hero" aria-label="Introduction">
-  <div class="orb orb-a" aria-hidden="true"></div>
-  <div class="orb orb-b" aria-hidden="true"></div>
   <div class="wrap hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow a1">Hello, I'm</p>
-      <h1 class="a2">Murala Thirupathi</h1>
+      <p class="eyebrow a1">Full-Stack Developer — Hyderabad, India</p>
+      <h1 class="a2"><span class="w">Murala</span> <span class="w em">Thirupathi</span></h1>
       <p class="tag a3">{{ tagline }}</p>
       <div class="flag a4"><span aria-hidden="true">🤖</span> Built the product's first <b>AI</b> features (OpenAI)</div>
       <p class="intro a5">{{ intro }}</p>
@@ -63,7 +61,7 @@
       </dl>
     </div>
     <div class="hero-photo a3" *ngIf="photoOk">
-      <img [src]="photo" alt="Portrait of Murala Thirupathi" width="238" height="238" (error)="onPhotoError()">
+      <img [src]="photo" alt="Portrait of Murala Thirupathi" width="340" height="340" fetchpriority="high" (error)="onPhotoError()">
     </div>
   </div>
 </section>
@@ -207,7 +205,6 @@
 
 <!-- CONTACT -->
 <section id="contact" class="section contact" aria-labelledby="h-contact">
-  <div class="orb orb-b" style="left:auto;right:-120px;bottom:-120px;top:auto" aria-hidden="true"></div>
   <div class="wrap reveal">
     <h2 id="h-contact"><span class="num">07</span> Let's build something</h2>
     <p class="contact-lead">

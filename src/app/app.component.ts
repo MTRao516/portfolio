@@ -25,7 +25,7 @@ export class AppComponent implements AfterViewInit {
 
   name = 'Murala Thirupathi';
   alias = 'MTR';
-  tagline = 'Full-Stack Developer · Java · Spring Boot · Angular · AI';
+  tagline = 'Java · Spring Boot · Angular — and the engineer who brought AI into the product.';
   email = 'thirupathiraomurala@gmail.com';
   phone = '+91 96400 46001';
   location = 'Hyderabad, Telangana · Open to new roles — Hybrid or Remote';
@@ -57,8 +57,8 @@ export class AppComponent implements AfterViewInit {
   constructor() {
     try {
       const saved = localStorage.getItem('mtr-theme') as 'dark' | 'light' | null;
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      this.theme = saved ?? (prefersLight ? 'light' : 'dark');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.theme = saved ?? (prefersDark ? 'dark' : 'light');
     } catch { this.theme = 'dark'; }
     document.documentElement.setAttribute('data-theme', this.theme);
   }
