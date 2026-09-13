@@ -43,3 +43,4 @@ Thumbs.db
 
 # raw photo uploads (not deployed)
 /photo-originals
+lh.json
