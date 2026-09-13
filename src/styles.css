@@ -403,7 +403,7 @@ strong {
   --rx: 0deg;
   --ry: 0deg;
   position: relative;
-  min-height: calc(100vh - 74px);
+  min-height: min(780px, calc(100vh - 74px));
   overflow: hidden;
 }
 
@@ -488,12 +488,13 @@ strong {
 }
 
 .role-line {
-  max-width: 780px;
+  max-width: 720px;
   margin-top: 18px;
   color: var(--accent);
-  font-size: clamp(22px, 3vw, 36px);
-  font-weight: 850;
-  line-height: 1.12;
+  font-size: clamp(20px, 2.4vw, 29px);
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.24;
   text-wrap: balance;
 }
 
@@ -709,8 +710,8 @@ strong {
 .modal h2 {
   margin-top: 14px;
   color: var(--ink);
-  font-size: clamp(34px, 5vw, 62px);
-  line-height: 1;
+  font-size: clamp(29px, 3.6vw, 44px);
+  line-height: 1.08;
 }
 
 .section-head p {
@@ -1273,7 +1274,9 @@ strong {
   margin-top: 26px;
 }
 
-.reveal {
+/* Content is visible by default. The hidden state is only enabled once JS has
+   successfully attached the reveal observer, so a JS failure can never blank the page. */
+.js-reveal .reveal {
   opacity: 0;
   transform: translateY(24px);
   filter: blur(6px);
@@ -1283,7 +1286,7 @@ strong {
     filter .78s cubic-bezier(.2, .72, .18, 1);
 }
 
-.reveal.in-view {
+.js-reveal .reveal.in-view {
   opacity: 1;
   transform: none;
   filter: blur(0);
@@ -1449,6 +1452,7 @@ strong {
     transition: none !important;
   }
 
+  .js-reveal .reveal,
   .reveal {
     opacity: 1;
     transform: none;

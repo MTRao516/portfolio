@@ -100,12 +100,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     'Backend-first full-stack developer turning complex enterprise workflows into fast, reliable SaaS.';
 
   intro =
-    'I build Java, Spring Boot and Angular products end to end across HR, health, fleet, invoicing and security. At AITITUDE IT, I shipped production AI features, tuned slow APIs, and translated complex business workflows into software teams can trust.';
+    'I build Java, Spring Boot and Angular products end to end across HR, health, fleet, invoicing and security. At AITITUDE IT I shipped the product\'s first production AI features, tuned slow APIs and reports, and turned complex business rules into software teams use every day.';
 
   signals: Signal[] = [
     { label: 'Core stack', value: 'Java / Spring Boot / Angular' },
     { label: 'Experience', value: '5+ years building SaaS' },
-    { label: 'Differentiator', value: 'Teacher turned product engineer' },
+    { label: 'Differentiator', value: 'Ships production AI, end to end' },
     { label: 'Now building', value: 'Agentic AI, RAG, voice systems' },
   ];
 
@@ -141,9 +141,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       desc: 'Worked across a multi-tenant enterprise platform, a CapEx approval product, and a multilingual voice-AI project.'
     },
     {
-      hi: '13 yrs',
-      label: 'CS teaching foundation',
-      desc: 'Former Computer Science lecturer and HOD, bringing clear communication, mentoring and fundamentals into engineering work.'
+      hi: 'Faster',
+      label: 'APIs and reports',
+      desc: 'Removed N+1 query bottlenecks with JOIN FETCH and projections, and added Redis caching on hot read paths.'
     },
   ];
 
@@ -319,9 +319,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       chips: ['OpenAI', 'Gemini', 'RAG', 'LangGraph', 'Prompt Design']
     },
     {
-      title: 'Communication',
-      blurb: 'A teaching background that helps in code reviews, mentoring, requirement translation and clear technical discussion.',
-      chips: ['Mentoring', 'CS Fundamentals', 'Review', 'Documentation']
+      title: 'Collaboration and Delivery',
+      blurb: 'Clear technical communication in code reviews and design discussions, translating business requirements into scope, and mentoring newer developers.',
+      chips: ['Code Review', 'Mentoring', 'Documentation', 'Agile']
     }
   ];
 
@@ -360,12 +360,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       ]
     },
     {
-      role: 'Lecturer and HOD, Computer Science',
+      role: 'Lecturer and Head of Department, Computer Science',
       org: 'Suvidya Degree College and Sri Chaitanya',
       period: '2008 - 2021, Telangana',
       points: [
-        'Taught Java, C and Visual Basic to hundreds of students and led the Computer Science department.',
-        'Built the communication, fundamentals and mentoring foundation behind a deliberate move into software engineering.'
+        'Taught Java, C and Visual Basic and led the Computer Science department, before moving into full-time software engineering.'
       ]
     }
   ];
@@ -532,6 +531,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
     }
     this.activeSection = current;
+    this.revealInView();
   }
 
   ngAfterViewInit(): void {
@@ -561,13 +561,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private revealEls: HTMLElement[] = [];
+
   private initReveal(): void {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const revealEls = this.host.nativeElement.querySelectorAll('.reveal');
+    this.revealEls = Array.from(
+      this.host.nativeElement.querySelectorAll('.reveal')
+    ) as HTMLElement[];
+
     if (reduce || !('IntersectionObserver' in window)) {
-      revealEls.forEach((el: Element) => el.classList.add('in-view'));
+      this.revealEls.forEach((el) => el.classList.add('in-view'));
       return;
     }
+
+    // Enable the hidden state only now that we know the observer can run.
+    document.documentElement.classList.add('js-reveal');
 
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -578,7 +586,26 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       });
     }, { threshold: 0.16, rootMargin: '0px 0px -40px 0px' });
 
-    revealEls.forEach((el: Element) => revealObserver.observe(el));
+    this.revealEls.forEach((el) => revealObserver.observe(el));
     this.observers.push(revealObserver);
+
+    // Safety nets. The scroll animation is a nicety; content being readable is not
+    // negotiable, so if the observer never delivers, everything is revealed anyway.
+    this.revealInView();
+    setTimeout(() => this.revealInView(), 400);
+    setTimeout(() => this.revealInView(), 1200);
+    setTimeout(() => this.revealEls.forEach((el) => el.classList.add('in-view')), 2500);
+  }
+
+  private revealInView(): void {
+    if (this.revealEls.length === 0) return;
+    const viewport = window.innerHeight || document.documentElement.clientHeight;
+    this.revealEls.forEach((el) => {
+      if (el.classList.contains('in-view')) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < viewport * 0.94 && rect.bottom > 0) {
+        el.classList.add('in-view');
+      }
+    });
   }
 }
