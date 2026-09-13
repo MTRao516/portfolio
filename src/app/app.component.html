@@ -84,7 +84,12 @@
       </dl>
     </div>
     <div class="hero-photo a3" *ngIf="photoOk">
-      <img [src]="photo" alt="Portrait of Murala Thirupathi" width="320" height="320" fetchpriority="high" (error)="onPhotoError()">
+      <picture>
+        <source type="image/webp" srcset="me-380.webp 380w, me-640.webp 640w"
+                sizes="(max-width: 900px) 190px, 320px">
+        <img src="me-640.jpg" alt="Portrait of Murala Thirupathi" width="320" height="320"
+             fetchpriority="high" decoding="async" (error)="onPhotoError()">
+      </picture>
       <span class="cap-chip">Available for new roles</span>
     </div>
   </div>

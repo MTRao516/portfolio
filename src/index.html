@@ -29,6 +29,9 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- LCP element: fetch the hero portrait as early as possible -->
+  <link rel="preload" as="image" href="me-640.webp" imagesrcset="me-380.webp 380w, me-640.webp 640w"
+        imagesizes="(max-width: 900px) 190px, 320px" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {

@@ -113,6 +113,7 @@ strong { color:var(--strong); font-weight:700; }
 
 /* photo block — clean, aligned portrait card */
 .hero-photo { position:relative; justify-self:end; display:flex; flex-direction:column; align-items:center; gap:14px; }
+.hero-photo picture { display:block; }
 .hero-photo img { display:block; width:320px; height:320px; border-radius:16px; object-fit:cover; object-position:center 22%;
   border:1px solid var(--line2); box-shadow:var(--shadow-photo); }
 .hero-photo figcaption, .hero-photo .cap-chip { display:inline-flex; align-items:center; gap:8px; color:var(--muted);
