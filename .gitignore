@@ -1,46 +1,42 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# Visual Studio Code
-.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
 !.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
-
+# Compiled output
+# IDEs and editors
 # Miscellaneous
-/.angular/cache
+# Node
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# System files
+# Visual Studio Code
+# raw photo uploads (not deployed)
+*.launch
+*.sublime-workspace
+.DS_Store
+.c9/
+.classpath
+.history/*
+.idea/
+.project
 .sass-cache/
+.settings/
+.vscode/*
+/.angular/cache
+/bazel-out
 /connect.lock
 /coverage
+/dist
 /libpeerconnection.log
-testem.log
-/typings
-
-# System files
-.DS_Store
-Thumbs.db
-
-# raw photo uploads (not deployed)
+/node_modules
+/out-tsc
 /photo-originals
+/tmp
+/typings
+Thumbs.db
+lh*.json
 lh.json
+npm-debug.log
+testem.log
+yarn-error.log
