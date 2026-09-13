@@ -1,6 +1,20 @@
 <!-- skip link (a11y) -->
 <a class="skip" href="#about">Skip to content</a>
 
+<!-- bespoke line-icon glyph sprite (24x24, stroke) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="g-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-5 4 10 2-5h6"/></symbol>
+  <symbol id="g-lens" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.3-2h6l1.3 2h1.2A2.5 2.5 0 0 1 20 8.5V17a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17z"/></symbol>
+  <symbol id="g-stamp" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h9"/><path d="m15.5 16.5 2 2 3.5-4"/></symbol>
+  <symbol id="g-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
+  <symbol id="g-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 4.5a3.2 3.2 0 0 1 0 6.4M18 13.6c2 .6 3.5 2.3 3.5 5.4"/></symbol>
+  <symbol id="g-board" viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1.2"/><rect x="9.5" y="4" width="5" height="11" rx="1.2"/><rect x="16" y="4" width="5" height="7" rx="1.2"/></symbol>
+  <symbol id="g-pin" viewBox="0 0 24 24"><path d="M12 21s6-5.2 6-10.5A6 6 0 0 0 6 10.5C6 15.8 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/></symbol>
+  <symbol id="g-id" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.5-1.5 1.7-2.3 3-2.3s2.5.8 3 2.3M14 10h4M14 13.5h4"/></symbol>
+  <symbol id="g-brief" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7M3 12h18"/></symbol>
+  <symbol id="g-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></symbol>
+</svg>
+
 <!-- scroll progress -->
 <div class="progress" [style.width.%]="scrollProgress" aria-hidden="true"></div>
 
@@ -36,10 +50,19 @@
   </div>
 </header>
 
+<!-- section rail (wide screens) -->
+<nav class="rail" aria-label="Sections">
+  <a *ngFor="let r of railItems; let i = index" class="rail-item" [href]="'#'+r.id"
+     [class.active]="activeSection===r.id" [attr.aria-current]="activeSection===r.id ? 'true' : null">
+    <span class="rail-n">{{ (i+1).toString().padStart(2,'0') }}</span>
+    <span class="rail-l">{{ r.label }}</span>
+  </a>
+</nav>
+
 <main>
 <!-- HERO -->
 <section id="top" class="hero" aria-label="Introduction">
-  <div class="wrap hero-inner">
+  <div class="wrap hero-inner" (mousemove)="onHeroMove($event)" (mouseleave)="onHeroLeave($event)">
     <div class="hero-copy">
       <p class="eyebrow a1">Full-Stack Developer — Hyderabad, India</p>
       <h1 class="a2"><span class="w">Murala</span> <span class="w em">Thirupathi</span></h1>
@@ -81,6 +104,13 @@
         have built the <strong>product's first AI features</strong>. I'm not done learning — right now I'm going deep on
         <strong>LLMs, RAG and agentic AI</strong>, because the best engineers never stop growing.
       </p>
+      <dl class="facts reveal" style="transition-delay:.16s">
+        <dt>Based in</dt><dd>Hyderabad, India · Hybrid or Remote</dd>
+        <dt>Experience</dt><dd>5+ years · since Feb 2021</dd>
+        <dt>Focus</dt><dd>Java · Spring Boot · Angular</dd>
+        <dt>Currently</dt><dd>Agentic AI &amp; RAG — building a multilingual voice agent</dd>
+        <dt>Before code</dt><dd>13 years teaching Computer Science</dd>
+      </dl>
     </div>
   </div>
 </section>
@@ -110,7 +140,7 @@
       <article class="fcard reveal" *ngFor="let p of featuredProjects; let i = index" [style.transition-delay.ms]="i*70"
                (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
         <div class="card-top">
-          <span class="cat"><span class="card-ico" aria-hidden="true">{{ p.icon }}</span>{{ p.cat }}</span>
+          <span class="cat"><svg class="glyph" aria-hidden="true"><use [attr.href]="'#g-'+glyphFor(p)"/></svg>{{ p.cat }}</span>
           <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
         </div>
         <h3>{{ p.name }}</h3>
@@ -127,23 +157,16 @@
     </div>
 
     <h3 class="more-heading reveal">More work</h3>
-    <div class="cards">
-      <article class="card reveal" *ngFor="let p of moreProjects; let i = index" [style.transition-delay.ms]="i*45"
-               (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
-        <div class="card-top">
-          <span class="cat"><span class="card-ico" aria-hidden="true">{{ p.icon }}</span>{{ p.cat }}</span>
-          <span class="badge" *ngIf="p.badge">{{ p.badge }}</span>
-        </div>
-        <h3>{{ p.name }}</h3>
-        <p class="card-desc">{{ p.desc }}</p>
-        <div class="tags">
-          <span class="tag-chip" *ngFor="let t of p.tech">{{ t }}</span>
-        </div>
-        <button class="cs-btn" *ngIf="p.caseStudy" type="button" (click)="openCase(p, $event)"
-                [attr.aria-label]="'View case study: ' + p.name">
-          Read the case study <span aria-hidden="true">→</span>
-        </button>
-      </article>
+    <div class="worklist reveal" role="list">
+      <button class="row" role="listitem" *ngFor="let p of moreProjects; let i = index" type="button"
+              (click)="openCase(p, $event)" [attr.aria-label]="'View case study: ' + p.name">
+        <span class="row-n">{{ (i+5).toString().padStart(2,'0') }}</span>
+        <svg class="glyph" aria-hidden="true"><use [attr.href]="'#g-'+glyphFor(p)"/></svg>
+        <span class="row-name">{{ p.name }}<span class="row-desc">{{ p.desc }}</span></span>
+        <span class="row-cat">{{ p.cat }}</span>
+        <span class="row-tech"><span class="tag-chip" *ngFor="let t of p.tech.slice(0,3)">{{ t }}</span></span>
+        <span class="row-arrow" aria-hidden="true">→</span>
+      </button>
     </div>
   </div>
 </section>
@@ -226,9 +249,16 @@
 </main>
 
 <footer class="foot">
-  <div class="wrap">
-    <span>© {{ year }} {{ name }} · {{ alias }}</span>
-    <span>Designed &amp; built with Angular</span>
+  <div class="foot-mark" aria-hidden="true">MTR.</div>
+  <div class="wrap foot-grid">
+    <div class="foot-col">
+      <span class="status"><span class="pulse" aria-hidden="true"></span>Open to new roles</span>
+      <span>Hyderabad, India · <span class="mono">{{ hydTime }}</span> local</span>
+    </div>
+    <div class="foot-col foot-right">
+      <span>© {{ year }} {{ name }}</span>
+      <span>Designed &amp; built by hand with Angular</span>
+    </div>
   </div>
 </footer>
 
@@ -239,7 +269,7 @@
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>
   <div class="modal-body">
-    <div class="modal-cat"><span class="card-ico" aria-hidden="true">{{ openProject.icon }}</span>{{ openProject.cat }}
+    <div class="modal-cat"><svg class="glyph" aria-hidden="true"><use [attr.href]="'#g-'+glyphFor(openProject)"/></svg>{{ openProject.cat }}
       <span class="badge" *ngIf="openProject.badge">{{ openProject.badge }}</span>
     </div>
     <h3 class="modal-title">{{ openProject.name }}</h3>

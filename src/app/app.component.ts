@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, HostListener, inject } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface CaseStudy { problem: string; approach: string[]; outcome: string; }
@@ -20,7 +20,7 @@ interface Stat { n: string; l: string; }
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
   private host = inject(ElementRef<HTMLElement>);
 
   name = 'Murala Thirupathi';
@@ -180,6 +180,51 @@ export class AppComponent implements AfterViewInit {
   onCardLeave(e: MouseEvent): void {
     (e.currentTarget as HTMLElement).style.setProperty('--mx', '-300px');
   }
+
+  // hero portrait micro-parallax (max ~3deg), driven by CSS custom props
+  onHeroMove(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.setProperty('--rx', (px * 6).toFixed(2) + 'deg');
+    el.style.setProperty('--ry', (-py * 6).toFixed(2) + 'deg');
+  }
+  onHeroLeave(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg');
+  }
+
+  // section rail (desktop) — nav items + contact
+  get railItems(): { id: string; label: string }[] {
+    return [...this.navItems, { id: 'contact', label: 'Contact' }];
+  }
+
+  // bespoke line-icon glyph per project category (SVG sprite ids in the template)
+  glyphFor(p: Project): string {
+    const c = p.cat.toLowerCase();
+    if (c.includes('health')) return 'pulse';
+    if (c.includes('vision')) return 'lens';
+    if (c.includes('finance')) return 'stamp';
+    if (c.includes('exploration') || c.includes('voice')) return 'wave';
+    if (c.includes('hrms')) return 'users';
+    if (c.includes('operations')) return 'board';
+    if (c.includes('security')) return 'pin';
+    if (c.includes('kyc')) return 'id';
+    if (c === 'hr') return 'brief';
+    return 'dot';
+  }
+
+  // live Hyderabad time in the footer
+  hydTime = '';
+  private timer: ReturnType<typeof setInterval> | null = null;
+  private tickTime(): void {
+    try {
+      this.hydTime = new Intl.DateTimeFormat('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' })
+        .format(new Date()).toUpperCase();
+    } catch { this.hydTime = ''; }
+  }
+  ngOnDestroy(): void { if (this.timer) clearInterval(this.timer); }
 
   expertise: Capability[] = [
     { title: 'Backend Engineering',
@@ -353,6 +398,8 @@ export class AppComponent implements AfterViewInit {
   ];
 
   ngAfterViewInit(): void {
+    this.tickTime();
+    this.timer = setInterval(() => this.tickTime(), 30000);
     const els = this.host.nativeElement.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
