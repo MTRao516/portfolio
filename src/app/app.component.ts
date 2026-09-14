@@ -207,18 +207,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       gateNote: 'Completion rules decide when an approval level is satisfied. Every transition is written to a tamper-evident trail.',
       cat: 'Finance',
       name: 'Capital Approval Platform',
-      badge: 'Spring Boot 3',
+      badge: 'Technical lead',
       featured: true,
       desc: 'Configurable multi-level approvals, budget tracking and a tamper-evident audit trail for high-value spend decisions.',
-      proof: 'Every approval is verifiable, not just recorded.',
+      proof: 'I set up the codebase and owned the approval engine.',
       tech: ['Java 17', 'Spring Boot 3', 'React', 'SQL Server'],
       caseStudy: {
-        problem: 'Capital-spend approvals needed configurable routing, budget visibility and verifiable history.',
+        problem: 'Capital-spend approvals needed configurable routing, budget visibility, and a history nobody could quietly rewrite.',
         approach: [
-          'Built amount-slab routing with parallel approvers and completion rules.',
+          'Set up the project and designed the approval engine: amount-slab routing, parallel approvers and completion rules.',
           'Tracked commitment and budget consumption through the approval lifecycle.',
-          'Hash-chained every audit entry to the one before it, so an edited or deleted record can be detected rather than trusted.',
-          'Delivered backend and frontend across a multi-tenant product surface.'
+          'Hash-chained every audit entry to the one before it with SHA-256, and put the chain check behind a public endpoint: scanning the QR on a printed approval recomputes it and proves the document was never altered.',
+          'Led the architecture while a team of five built the surrounding modules.'
         ],
         outcome: 'Approvals that can be reconstructed after the fact: who approved what, at which level, against which budget - and proof the record has not been altered since.'
       }
