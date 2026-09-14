@@ -1640,22 +1640,6 @@ strong {
 .portrait picture,
 .portrait img { display: block; }
 
-.portrait-gl {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .5s ease;
-}
-
-.portrait.gl-on .portrait-gl { opacity: 1; }
-
-/* once GL is painting, hide the still image beneath it to avoid double edges */
-.portrait.gl-on img { opacity: 0; transition: opacity .5s ease; }
-
 /* real layered depth: the portrait floats above the card surface */
 .hero-card { transform-style: preserve-3d; }
 .hero-card .portrait { transform: translateZ(38px); }
@@ -1676,9 +1660,7 @@ strong {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .portrait-gl { display: none; }
-  .portrait.gl-on img { opacity: 1; }
-  .hero-card .portrait,
+      .hero-card .portrait,
   .hero-card .availability,
   .hero-card .scan-lines { transform: none; }
   .impact-card, .fit-strip article { transition: none; }

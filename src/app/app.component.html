@@ -71,13 +71,12 @@
         </div>
 
         <aside class="hero-card reveal in-view" aria-label="Recruiter quick scan">
-          <div class="portrait" *ngIf="photoOk" [class.gl-on]="portraitGlOn">
+          <div class="portrait" *ngIf="photoOk">
             <picture>
               <source type="image/webp" srcset="me-380.webp 380w, me-640.webp 640w" sizes="(max-width: 720px) 300px, 354px">
-              <img #portraitImg src="me-640.jpg" alt="Portrait of Murala Thirupathi" width="354" height="354"
+              <img src="me-640.jpg" alt="Portrait of Murala Thirupathi" width="354" height="354"
                    fetchpriority="high" decoding="async" (error)="onPhotoError()">
             </picture>
-            <canvas #portraitGl class="portrait-gl" aria-hidden="true"></canvas>
           </div>
           <div class="availability">
             <span class="live-dot" aria-hidden="true"></span>
