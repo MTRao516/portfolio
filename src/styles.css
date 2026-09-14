@@ -103,7 +103,7 @@ h2,
 h3,
 .brand-mark,
 .impact-card strong,
-.row-index {
+.case-index {
   color: var(--ink);
   font-family: var(--display);
   font-weight: 600;
@@ -116,10 +116,9 @@ h3,
 h1 { font-variation-settings: 'opsz' 144; letter-spacing: -.021em; }
 .section-head h2,
 .contact h2,
-.modal h2 { font-variation-settings: 'opsz' 96; letter-spacing: -.014em; }
+.case h3 { font-variation-settings: 'opsz' 96; letter-spacing: -.014em; }
 h3,
 .impact-card strong,
-.row-index,
 .brand-mark { font-variation-settings: 'opsz' 36; letter-spacing: -.006em; }
 
 p,
@@ -241,7 +240,6 @@ strong {
 .links,
 .nav-actions,
 .hero-actions,
-.modal-top,
 .project-top,
 .foot-inner {
   display: flex;
@@ -449,6 +447,7 @@ strong {
 
 .hero-copy {
   max-width: 790px;
+  container-type: inline-size;
 }
 
 .eyebrow,
@@ -476,8 +475,13 @@ strong {
   max-width: 860px;
   margin-top: 24px;
   color: var(--ink);
-  font-size: clamp(50px, 7.2vw, 104px);
-  line-height: .94;
+  /* "Murala Thirupathi" measures 6.998em in Fraunces at these settings, so
+     13.7cqw keeps it on one line at ~96% of the column at every width.
+     The clamp() above is the fallback for engines without container units. */
+  white-space: nowrap;
+  font-size: clamp(38px, 7vw, 104px);
+  font-size: min(104px, 13.7cqw);
+  line-height: 1;
 }
 
 .role-line {
@@ -606,11 +610,20 @@ strong {
   pointer-events: none;
 }
 
+/* The portrait is a cut-out with no background of its own, so the card supplies
+   one: a soft accent wash that the subject stands on, in both themes. */
 .portrait {
   position: relative;
   z-index: 1;
   width: 100%;
   margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(110% 78% at 50% 104%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 62%),
+    var(--bg-2);
 }
 
 .portrait img {
@@ -618,10 +631,9 @@ strong {
   width: 100%;
   aspect-ratio: 1;
   height: auto;
-  object-fit: cover;
-  object-position: center 20%;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 10px 16px color-mix(in srgb, var(--ink) 22%, transparent));
 }
 
 .availability,
@@ -673,8 +685,7 @@ strong {
 }
 
 .scan-lines span,
-.location-line,
-.row-cat {
+.location-line {
   color: var(--muted);
   font-family: var(--mono);
   font-size: 12px;
@@ -706,7 +717,7 @@ strong {
 
 .section-head h2,
 .contact h2,
-.modal h2 {
+.case h3 {
   margin-top: 12px;
   color: var(--ink);
   font-size: clamp(29px, 3.6vw, 44px);
@@ -733,11 +744,11 @@ strong {
 }
 
 .impact-card,
-.project-card,
 .capability,
 .job,
 .learning-board,
-.modal {
+.case,
+.mini {
   border: 1px solid var(--line);
   border-radius: 8px;
   background:
@@ -754,9 +765,8 @@ strong {
 }
 
 .impact-card:hover,
-.project-card:hover,
 .capability:hover,
-.work-row:hover {
+.mini:hover {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
   box-shadow: var(--shadow);
@@ -772,10 +782,10 @@ strong {
 
 .impact-card h3,
 .capability h3,
-.project-card h3,
 .more-work h3,
 .job h3,
-.case-block h3 {
+.case h3,
+.mini h4 {
   color: var(--ink);
 }
 
@@ -787,48 +797,164 @@ strong {
 
 .impact-card p,
 .capability p,
-.project-card p,
 .job li,
 .case-block p,
-.case-block li {
+.case-block li,
+.mini p {
   color: var(--text);
   font-size: 14px;
   line-height: 1.65;
-}
-
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.project-card {
-  position: relative;
-  display: flex;
-  min-height: 390px;
-  flex-direction: column;
-  padding: 28px;
-  overflow: hidden;
-  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-}
-
-.project-card::after {
-  content: '';
-  position: absolute;
-  right: -40px;
-  bottom: -46px;
-  width: 160px;
-  height: 160px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  opacity: .55;
-  color: transparent;
 }
 
 .project-top {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 32px;
+}
+
+/* ============================================================
+   Inline case studies. Every study is on the page - nothing is
+   hidden behind a click, so a recruiter skimming once sees the
+   problem, the decisions and the outcome for all of them.
+   ============================================================ */
+.cases {
+  display: grid;
+  gap: 20px;
+}
+
+.case,
+.mini {
+  /* grid items default to min-width:auto, which lets a nowrap badge push the
+     card wider than its column on very narrow screens */
+  min-width: 0;
+}
+
+.case {
+  padding: 28px 28px 32px;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+
+.case:hover {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  box-shadow: var(--shadow);
+}
+
+.case-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.case-index {
+  color: var(--muted);
+  font-family: var(--display);
+  font-size: 21px;
+  font-variation-settings: 'opsz' 36;
+  line-height: 1;
+}
+
+.case-head .badge {
+  margin-left: auto;
+}
+
+/* Left column is what and why, right column is how. The left pins while the
+   detail scrolls past, so the title and problem stay with the approach. */
+.case-body {
+  display: grid;
+  grid-template-columns: minmax(0, .86fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 20px 40px;
+  padding-top: 22px;
+}
+
+.case-intro {
+  position: sticky;
+  top: 96px;
+}
+
+.case-intro .case-block h4 {
+  color: var(--muted);
+}
+
+.case-intro h3 {
+  margin-bottom: 12px;
+  font-size: clamp(27px, 2.6vw, 38px);
+  line-height: 1.04;
+}
+
+.case-lede {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.case-intro .proof-line {
+  margin: 18px 0;
+}
+
+.case-detail > :first-child {
+  margin-top: 0;
+}
+
+/* --- secondary work: same substance, tighter frame --- */
+.more-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mini {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.mini-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mini h4 {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 21px;
+  font-variation-settings: 'opsz' 36;
+  font-weight: 600;
+  letter-spacing: -.006em;
+  line-height: 1.1;
+}
+
+.mini-outcome {
+  margin: 14px 0 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink) !important;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.mini-outcome span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--accent-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.mini .tags {
+  margin-top: auto;
 }
 
 .project-cat {
@@ -870,11 +996,10 @@ strong {
   white-space: nowrap;
 }
 
-.project-card h3 {
-  max-width: 520px;
+.case-intro h3 {
   margin-bottom: 12px;
-  font-size: clamp(26px, 3vw, 38px);
-  line-height: 1.02;
+  font-size: clamp(27px, 2.6vw, 38px);
+  line-height: 1.04;
 }
 
 .proof-line {
@@ -910,27 +1035,6 @@ strong {
   border-radius: 6px;
 }
 
-.text-link {
-  width: fit-content;
-  margin-top: auto;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.text-link::after {
-  content: ' ->';
-  color: var(--accent);
-  font-family: var(--mono);
-  transition: padding-left .2s ease;
-}
-
-.text-link:hover::after {
-  padding-left: 8px;
-}
-
 .more-work {
   margin-top: 40px;
 }
@@ -941,59 +1045,6 @@ strong {
   font-size: 12px;
   letter-spacing: .14em;
   text-transform: uppercase;
-}
-
-.work-row {
-  display: grid;
-  grid-template-columns: 46px 28px minmax(0, 1fr) 140px 34px;
-  align-items: center;
-  width: 100%;
-  gap: 16px;
-  padding: 16px 8px;
-  border: 0;
-  border-top: 1px solid var(--line);
-  background: transparent;
-  color: var(--ink);
-  text-align: left;
-  cursor: pointer;
-  transition: transform .22s ease, background .22s ease, padding .22s ease, border-color .22s ease;
-}
-
-.work-row:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-.work-row:hover {
-  padding-left: 20px;
-  background: var(--panel);
-}
-
-.row-index {
-  color: var(--muted);
-  font-size: 25px;
-}
-
-.row-main {
-  display: grid;
-  gap: 0px;
-}
-
-.row-main strong {
-  font-family: var(--display);
-  font-size: 20px;
-  line-height: 1.1;
-}
-
-.row-main small {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.row-arrow {
-  justify-self: end;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-weight: 800;
 }
 
 .craft-grid {
@@ -1206,64 +1257,11 @@ strong {
   text-transform: uppercase;
 }
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: rgba(0, 0, 0, .62);
-  backdrop-filter: blur(8px);
-  animation: fade .2s ease;
-}
-
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 301;
-  width: min(720px, calc(100vw - 34px));
-  max-height: min(84vh, 780px);
-  overflow-y: auto;
-  padding: 32px;
-  transform: translate(-50%, -50%);
-  background:
-    radial-gradient(460px circle at 86% 0, color-mix(in srgb, var(--accent) 18%, transparent), transparent 68%),
-    var(--panel-strong);
-  box-shadow: 0 40px 140px -40px rgba(0, 0, 0, .74);
-  animation: pop .24s ease;
-}
-
-.modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: inline-grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-  font-family: var(--mono);
-  font-weight: 800;
-}
-
-.modal-top {
-  gap: 8px;
-  padding-right: 48px;
-}
-
-.modal h2 {
-  margin: 18px 44px 24px 0;
-  font-size: clamp(30px, 5vw, 52px);
-}
-
 .case-block {
   margin-top: 20px;
 }
 
-.case-block h3 {
+.case-block h4 {
   margin-bottom: 8px;
   color: var(--accent-2);
   font-family: var(--mono);
@@ -1285,10 +1283,6 @@ strong {
 .outcome {
   color: var(--ink) !important;
   font-weight: 800;
-}
-
-.modal .tags {
-  margin-top: 24px;
 }
 
 /* Content is visible by default. The hidden state is only enabled once JS has
@@ -1338,6 +1332,15 @@ strong {
 }
 
 @media (max-width: 1040px) {
+  .case-body,
+  .more-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .case-intro {
+    position: static;
+  }
+
   .impact-grid,
   .craft-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1353,9 +1356,6 @@ strong {
     width: min(680px, 100%);
   }
 
-  .featured-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 760px) {
@@ -1386,10 +1386,6 @@ strong {
     padding-bottom: 48px;
   }
 
-  .hero h1 {
-    font-size: clamp(48px, 15vw, 82px);
-  }
-
   .intro,
   .contact p {
     font-size: 16px;
@@ -1406,24 +1402,6 @@ strong {
     grid-template-columns: 1fr;
   }
 
-  .project-card {
-    min-height: 0;
-    padding: 24px;
-  }
-
-  .work-row {
-    grid-template-columns: 36px 24px minmax(0, 1fr) 28px;
-    gap: 8px;
-  }
-
-  .row-cat {
-    display: none;
-  }
-
-  .row-main strong {
-    font-size: 20px;
-  }
-
   .job-head,
   .location-line,
   .foot-inner {
@@ -1433,6 +1411,14 @@ strong {
 }
 
 @media (max-width: 520px) {
+  .case {
+    padding: 22px 18px 26px;
+  }
+
+  .mini {
+    padding: 18px;
+  }
+
   .hero-actions {
     align-items: stretch;
     flex-direction: column;
@@ -1453,9 +1439,6 @@ strong {
     height: auto;
   }
 
-  .modal {
-    padding: 28px 20px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -72,11 +72,10 @@
 
         <aside class="hero-card reveal in-view" aria-label="Recruiter quick scan">
           <div class="portrait" *ngIf="photoOk">
-            <picture>
-              <source type="image/webp" srcset="me-380.webp 380w, me-640.webp 640w" sizes="(max-width: 720px) 300px, 354px">
-              <img src="me-640.jpg" alt="Portrait of Murala Thirupathi" width="354" height="354"
-                   fetchpriority="high" decoding="async" (error)="onPhotoError()">
-            </picture>
+            <img src="me-640.webp" srcset="me-380.webp 380w, me-640.webp 640w"
+                 sizes="(max-width: 720px) 300px, 354px"
+                 alt="Portrait of Murala Thirupathi" width="354" height="354"
+                 fetchpriority="high" decoding="async" (error)="onPhotoError()">
           </div>
           <div class="availability">
             <span class="live-dot" aria-hidden="true"></span>
@@ -112,41 +111,81 @@
         <p>Each one states the problem, the engineering decisions I made, and what it changed.</p>
       </div>
 
-      <div class="featured-grid">
-        <article class="project-card reveal" *ngFor="let project of featuredProjects; let i = index"
-          [style.transition-delay.ms]="i * 40" (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
-          <div class="project-top">
+      <div class="cases">
+        <article class="case reveal" *ngFor="let project of featuredProjects; let i = index">
+          <header class="case-head">
+            <span class="case-index mono">{{ (i + 1).toString().padStart(2, '0') }}</span>
             <span class="project-cat">
               <svg class="glyph" aria-hidden="true"><use [attr.href]="'#i-' + iconFor(project)"></use></svg>
               {{ project.cat }}
             </span>
             <span class="badge" *ngIf="project.badge">{{ project.badge }}</span>
+          </header>
+
+          <div class="case-body">
+            <div class="case-intro">
+              <h3>{{ project.name }}</h3>
+              <p class="case-lede">{{ project.desc }}</p>
+              <div class="case-block">
+                <h4>Problem</h4>
+                <p>{{ project.caseStudy.problem }}</p>
+              </div>
+              <p class="proof-line">{{ project.proof }}</p>
+              <div class="tags compact">
+                <span *ngFor="let tag of project.tech">{{ tag }}</span>
+              </div>
+            </div>
+
+            <div class="case-detail">
+              <figure class="arch" *ngIf="project.pipeline">
+                <figcaption>How it runs in production</figcaption>
+                <ol class="arch-flow">
+                  <li *ngFor="let stage of project.pipeline; let j = index; let last = last"
+                      [class.is-gate]="j === project.gate" [class.is-last]="last">
+                    <span class="arch-node">{{ stage }}</span>
+                  </li>
+                </ol>
+                <p class="arch-note" *ngIf="project.gateNote">
+                  <span class="arch-note-key" aria-hidden="true"></span>{{ project.gateNote }}
+                </p>
+              </figure>
+
+              <div class="case-block">
+                <h4>Approach</h4>
+                <ul>
+                  <li *ngFor="let step of project.caseStudy.approach">{{ step }}</li>
+                </ul>
+              </div>
+
+              <div class="case-block">
+                <h4>Outcome</h4>
+                <p class="outcome">{{ project.caseStudy.outcome }}</p>
+              </div>
+            </div>
           </div>
-          <h3>{{ project.name }}</h3>
-          <p>{{ project.desc }}</p>
-          <div class="proof-line">{{ project.proof }}</div>
-          <div class="tags">
-            <span *ngFor="let tag of project.tech">{{ tag }}</span>
-          </div>
-          <button type="button" class="text-link" (click)="openCase(project, $event)">
-            Read case study
-          </button>
         </article>
       </div>
 
       <div class="more-work reveal">
         <h3>More product work</h3>
-        <button class="work-row" *ngFor="let project of moreProjects; let i = index" type="button"
-          (click)="openCase(project, $event)">
-          <span class="row-index">{{ (i + 5).toString().padStart(2, '0') }}</span>
-          <svg class="glyph" aria-hidden="true"><use [attr.href]="'#i-' + iconFor(project)"></use></svg>
-          <span class="row-main">
-            <strong>{{ project.name }}</strong>
-            <small>{{ project.proof }}</small>
-          </span>
-          <span class="row-cat">{{ project.cat }}</span>
-          <span class="row-arrow" aria-hidden="true">-></span>
-        </button>
+        <div class="more-grid">
+          <article class="mini" *ngFor="let project of moreProjects; let i = index"
+            (mousemove)="onCardMove($event)" (mouseleave)="onCardLeave($event)">
+            <div class="mini-top">
+              <span class="project-cat">
+                <svg class="glyph" aria-hidden="true"><use [attr.href]="'#i-' + iconFor(project)"></use></svg>
+                {{ project.cat }}
+              </span>
+              <span class="case-index mono">{{ (i + 5).toString().padStart(2, '0') }}</span>
+            </div>
+            <h4>{{ project.name }}</h4>
+            <p>{{ project.desc }}</p>
+            <p class="mini-outcome"><span>Outcome</span>{{ project.caseStudy.outcome }}</p>
+            <div class="tags compact">
+              <span *ngFor="let tag of project.tech">{{ tag }}</span>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </section>
@@ -245,49 +284,3 @@
     <span class="mono">{{ year }}</span>
   </div>
 </footer>
-
-<div class="modal-backdrop" *ngIf="openProject" (click)="closeCase()"></div>
-<section class="modal" *ngIf="openProject" role="dialog" aria-modal="true"
-  [attr.aria-label]="openProject.name + ' case study'" (keydown)="onModalKeydown($event)">
-  <button class="modal-close" type="button" (click)="closeCase()" aria-label="Close case study" title="Close">
-    <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
-  </button>
-  <div class="modal-top">
-    <span class="project-cat">
-      <svg class="glyph" aria-hidden="true"><use [attr.href]="'#i-' + iconFor(openProject)"></use></svg>
-      {{ openProject.cat }}
-    </span>
-    <span class="badge" *ngIf="openProject.badge">{{ openProject.badge }}</span>
-  </div>
-  <h2>{{ openProject.name }}</h2>
-  <div class="case-block">
-    <h3>Problem</h3>
-    <p>{{ openProject.caseStudy.problem }}</p>
-  </div>
-
-  <figure class="arch" *ngIf="openProject.pipeline">
-    <figcaption>How it runs in production</figcaption>
-    <ol class="arch-flow">
-      <li *ngFor="let stage of openProject.pipeline; let i = index; let last = last"
-          [class.is-gate]="i === openProject.gate" [class.is-last]="last">
-        <span class="arch-node">{{ stage }}</span>
-      </li>
-    </ol>
-    <p class="arch-note" *ngIf="openProject.gateNote">
-      <span class="arch-note-key" aria-hidden="true"></span>{{ openProject.gateNote }}
-    </p>
-  </figure>
-  <div class="case-block">
-    <h3>Approach</h3>
-    <ul>
-      <li *ngFor="let step of openProject.caseStudy.approach">{{ step }}</li>
-    </ul>
-  </div>
-  <div class="case-block">
-    <h3>Outcome</h3>
-    <p class="outcome">{{ openProject.caseStudy.outcome }}</p>
-  </div>
-  <div class="tags">
-    <span *ngFor="let tag of openProject.tech">{{ tag }}</span>
-  </div>
-</section>

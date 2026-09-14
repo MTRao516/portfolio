@@ -86,11 +86,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   photoOk = true;
   scrollProgress = 0;
   activeSection = 'top';
-  openProject: Project | null = null;
   hydTime = '';
 
   private timer: ReturnType<typeof setInterval> | null = null;
-  private lastFocused: HTMLElement | null = null;
   private observers: IntersectionObserver[] = [];
 
   sections = ['top', 'work', 'proof', 'craft', 'experience', 'trajectory', 'contact'];
@@ -441,48 +439,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.photoOk = false;
   }
 
-  openCase(project: Project, ev: Event): void {
-    this.lastFocused = ev.currentTarget as HTMLElement;
-    this.openProject = project;
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => (this.host.nativeElement.querySelector('.modal-close') as HTMLElement | null)?.focus(), 0);
-  }
-
-  closeCase(): void {
-    this.openProject = null;
-    document.body.style.overflow = '';
-    this.lastFocused?.focus();
-  }
-
-  onModalKeydown(e: KeyboardEvent): void {
-    if (e.key !== 'Tab') {
-      return;
-    }
-
-    const modal = this.host.nativeElement.querySelector('.modal') as HTMLElement | null;
-    if (!modal) {
-      return;
-    }
-
-    const nodes = Array.from(
-      modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')
-    ) as HTMLElement[];
-    if (!nodes.length) {
-      return;
-    }
-
-    const first = nodes[0];
-    const last = nodes[nodes.length - 1];
-    const active = document.activeElement;
-    if (e.shiftKey && active === first) {
-      last.focus();
-      e.preventDefault();
-    } else if (!e.shiftKey && active === last) {
-      first.focus();
-      e.preventDefault();
-    }
-  }
-
   onCardMove(e: MouseEvent): void {
     const el = e.currentTarget as HTMLElement;
     const rect = el.getBoundingClientRect();
@@ -530,9 +486,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('document:keydown.escape')
   onEsc(): void {
-    if (this.openProject) {
-      this.closeCase();
-    } else if (this.menuOpen) {
+    if (this.menuOpen) {
       this.closeMenu();
     }
   }
