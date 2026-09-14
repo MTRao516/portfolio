@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface CaseStudy {
@@ -500,8 +500,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     el.style.setProperty('--hero-x', `${(x * 10).toFixed(2)}px`);
     el.style.setProperty('--hero-y', `${(y * 10).toFixed(2)}px`);
-    el.style.setProperty('--rx', `${(x * 5).toFixed(2)}deg`);
-    el.style.setProperty('--ry', `${(-y * 5).toFixed(2)}deg`);
+    el.style.setProperty('--rx', `${(x * 9).toFixed(2)}deg`);
+    el.style.setProperty('--ry', `${(-y * 9).toFixed(2)}deg`);
+    this.ptr.x = x * 2;
+    this.ptr.y = -y * 2;
   }
 
   onHeroLeave(e: MouseEvent): void {
@@ -510,6 +512,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     el.style.setProperty('--hero-y', '0px');
     el.style.setProperty('--rx', '0deg');
     el.style.setProperty('--ry', '0deg');
+    this.ptr.x = 0;
+    this.ptr.y = 0;
   }
 
   iconFor(project: Project): string {
@@ -557,6 +561,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.timer = setInterval(() => this.tickTime(), 30000);
     this.onScroll();
     this.initReveal();
+    this.initPortraitGl();
   }
 
   ngOnDestroy(): void {
@@ -564,6 +569,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       clearInterval(this.timer);
     }
     this.observers.forEach((observer) => observer.disconnect());
+    this.stopPortraitGl();
   }
 
   private tickTime(): void {
@@ -577,6 +583,150 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     } catch {
       this.hydTime = '';
     }
+  }
+
+  // ---- WebGL portrait -------------------------------------------------
+  // Hand-written GL (no library): a depth-parallax + chromatic-edge shader that
+  // gives the portrait real dimensionality. ~5 KB instead of ~175 KB for Three.js.
+  // Starts only after first paint, only when visible, never under reduced motion,
+  // and silently leaves the plain <img> in place if anything is unavailable.
+  @ViewChild('portraitGl') portraitGlRef?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('portraitImg') portraitImgRef?: ElementRef<HTMLImageElement>;
+  portraitGlOn = false;
+
+  private glCtx: WebGLRenderingContext | null = null;
+  private glRaf = 0;
+  private glStart = 0;
+  private ptr = { x: 0, y: 0 };
+  private ptrEased = { x: 0, y: 0 };
+
+  private initPortraitGl(): void {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const canvas = this.portraitGlRef?.nativeElement;
+    const img = this.portraitImgRef?.nativeElement;
+    if (!canvas || !img) return;
+
+    const start = () => {
+      try {
+        // If the image never actually decoded, keep the plain <img>: uploading a
+        // broken image as a texture would hide a working fallback behind a blank canvas.
+        if (!img.naturalWidth || !img.naturalHeight) return;
+        const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
+        if (!gl) return;
+
+        const vs = `attribute vec2 p; varying vec2 uv;
+          void main(){ uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`;
+        const fs = `precision mediump float;
+          uniform sampler2D tex; uniform vec2 mouse; uniform float t; uniform float fade;
+          varying vec2 uv;
+          void main(){
+            vec2 c = uv - 0.5;
+            float r = length(c);
+            float depth = smoothstep(0.78, 0.0, r);          // centre sits "closer"
+            vec2 off = mouse * 0.040 * depth;                 // parallax toward cursor
+            off += vec2(sin(t * 0.35), cos(t * 0.28)) * 0.0016; // slow breathing
+            vec2 s = uv - off;
+            float ca = 0.0016 * (1.0 - depth);                // chromatic edge = glass depth
+            vec3 col;
+            col.r = texture2D(tex, s + vec2(ca, 0.0)).r;
+            col.g = texture2D(tex, s).g;
+            col.b = texture2D(tex, s - vec2(ca, 0.0)).b;
+            col *= 1.0 - 0.16 * smoothstep(0.34, 0.78, r);    // vignette
+            gl_FragColor = vec4(col, fade);
+          }`;
+
+        const sh = (type: number, src: string) => {
+          const s = gl.createShader(type)!;
+          gl.shaderSource(s, src); gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error('shader');
+          return s;
+        };
+        const prog = gl.createProgram()!;
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
+        gl.useProgram(prog);
+
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'p');
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+        const texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        const uMouse = gl.getUniformLocation(prog, 'mouse');
+        const uT = gl.getUniformLocation(prog, 't');
+        const uFade = gl.getUniformLocation(prog, 'fade');
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        const resize = () => {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const w = Math.round(canvas.clientWidth * dpr);
+          const h = Math.round(canvas.clientHeight * dpr);
+          if (w && h && (canvas.width !== w || canvas.height !== h)) {
+            canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h);
+          }
+        };
+
+        this.glCtx = gl;
+        this.glStart = performance.now();
+        this.portraitGlOn = true;
+
+        const frame = (now: number) => {
+          resize();
+          // ease the pointer so motion feels weighted, not twitchy
+          this.ptrEased.x += (this.ptr.x - this.ptrEased.x) * 0.08;
+          this.ptrEased.y += (this.ptr.y - this.ptrEased.y) * 0.08;
+          const elapsed = (now - this.glStart) / 1000;
+          gl.uniform2f(uMouse, this.ptrEased.x, this.ptrEased.y);
+          gl.uniform1f(uT, elapsed);
+          gl.uniform1f(uFade, Math.min(1, elapsed / 0.6));
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+          this.glRaf = requestAnimationFrame(frame);
+        };
+        this.glRaf = requestAnimationFrame(frame);
+
+        // Don't burn a render loop (or the visitor's battery) while the hero is
+        // scrolled out of view.
+        if ('IntersectionObserver' in window) {
+          const vis = new IntersectionObserver((entries) => {
+            const showing = entries.some((e) => e.isIntersecting);
+            if (showing && !this.glRaf) {
+              this.glRaf = requestAnimationFrame(frame);
+            } else if (!showing && this.glRaf) {
+              cancelAnimationFrame(this.glRaf);
+              this.glRaf = 0;
+            }
+          }, { threshold: 0 });
+          vis.observe(canvas);
+          this.observers.push(vis);
+        }
+      } catch {
+        this.portraitGlOn = false;   // fall back to the plain image
+      }
+    };
+
+    const begin = () => (img.complete ? start() : img.addEventListener('load', start, { once: true }));
+    const idle = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: object) => number })
+      .requestIdleCallback;
+    if (idle) idle(begin, { timeout: 2000 }); else setTimeout(begin, 900);
+  }
+
+  private stopPortraitGl(): void {
+    if (this.glRaf) cancelAnimationFrame(this.glRaf);
+    const ext = this.glCtx?.getExtension('WEBGL_lose_context');
+    ext?.loseContext();
+    this.glCtx = null;
   }
 
   private revealEls: HTMLElement[] = [];
