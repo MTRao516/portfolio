@@ -197,7 +197,8 @@
       </div>
 
       <div class="timeline">
-        <article class="job reveal" *ngFor="let job of experience; let i = index" [style.transition-delay.ms]="i * 40">
+        <article class="job reveal" *ngFor="let job of experience; let i = index" [class.prior]="job.prior"
+                 [style.transition-delay.ms]="i * 40">
           <div class="job-head">
             <h3>{{ job.role }}</h3>
             <span>{{ job.period }}</span>

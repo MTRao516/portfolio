@@ -42,6 +42,8 @@ interface Job {
   org: string;
   period: string;
   points: string[];
+  /** Pre-engineering history: kept for accuracy, rendered at lower visual weight. */
+  prior?: boolean;
 }
 
 interface Signal {
@@ -132,8 +134,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   impact: Impact[] = [
     {
-      hi: 'AI-first',
-      label: 'Introduced product AI',
+      hi: '1st',
+      label: 'Production AI in the product',
       desc: 'Built the platform\'s first OpenAI-backed clinical assistant and vision capture workflows with validation and human review.'
     },
     {
@@ -201,19 +203,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
     },
     {
-      id: 'capex',
+      id: 'capital-approvals',
       pipeline: ['Raise request', 'Amount-slab routing', 'Parallel approvers', 'Completion rules', 'Budget commit', 'Audit trail'],
       gate: 3,
       gateNote: 'Completion rules decide when an approval level is satisfied. Every transition is written to a tamper-evident trail.',
       cat: 'Finance',
-      name: 'Capital-Expenditure Approval Platform',
+      name: 'Capital Approval Platform',
       badge: 'Spring Boot 3',
       featured: true,
-      desc: 'Configurable multi-level approvals, budget tracking and a tamper-evident audit trail for CapEx decisions.',
+      desc: 'Configurable multi-level approvals, budget tracking and a tamper-evident audit trail for high-value spend decisions.',
       proof: 'A full product-grade workflow, not a demo screen.',
       tech: ['Java 17', 'Spring Boot 3', 'React', 'SQL Server'],
       caseStudy: {
-        problem: 'CapEx approvals needed configurable routing, budget visibility and verifiable history.',
+        problem: 'Capital-spend approvals needed configurable routing, budget visibility and verifiable history.',
         approach: [
           'Built amount-slab routing with parallel approvers and completion rules.',
           'Tracked commitment and budget consumption through the approval lifecycle.',
@@ -374,15 +376,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         'Delivered 20+ production features across HR, fleet, health, invoice, security, careers and incident modules.',
         'Built features end to end within a multi-tenant, JWT-secured platform with RBAC and tenant isolation.',
         'Improved API and report performance by tuning slow queries and adding Redis caching for hot read paths.',
-        'Contributed to platform modernization from Angular 16 to Angular 19 with AdminLTE 4 and Bootstrap 5.'
+        'Contributed as part of the team to the platform modernization from Angular 16 to Angular 19, and the move to Bootstrap 5.'
       ]
     },
     {
-      role: 'Lecturer and Head of Department, Computer Science',
+      role: 'Lecturer, Computer Science',
+      prior: true,
       org: 'Suvidya Degree College and Sri Chaitanya',
       period: '2008 - 2021, Telangana',
       points: [
-        'Taught Java, C and Visual Basic and led the Computer Science department, before moving into full-time software engineering.'
+        'Taught Java and core programming and led the department, before moving into full-time software engineering.'
       ]
     }
   ];
