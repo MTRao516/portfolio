@@ -124,7 +124,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     },
     {
       title: 'Java backend specialist',
-      desc: 'Comfortable with REST APIs, JPA, performance tuning, tenant-aware security and production debugging.'
+      desc: 'Comfortable with REST APIs, SQL and query tuning, tenant-aware security and production debugging.'
     },
     {
       title: 'Practical AI integrator',
@@ -325,8 +325,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   expertise: Capability[] = [
     {
       title: 'Backend Architecture',
-      blurb: 'REST APIs, JPA/Hibernate, tenant-aware design, JWT/RBAC, query tuning, Redis caching and production debugging.',
-      chips: ['Java', 'Spring Boot', 'JPA', 'Hibernate', 'MySQL', 'Redis', 'JWT']
+      blurb: 'REST APIs, hand-written SQL over JdbcTemplate, JPA/Hibernate entity mapping, tenant-aware design, JWT/RBAC, Redis caching and production debugging.',
+      chips: ['Java', 'Spring Boot', 'SQL', 'JdbcTemplate', 'JPA', 'MySQL', 'Redis', 'JWT']
     },
     {
       title: 'Enterprise Frontend',
@@ -376,7 +376,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         'Delivered 20+ production features across HR, fleet, health, invoice, security, careers and incident modules.',
         'Built features end to end within a multi-tenant, JWT-secured platform with RBAC and tenant isolation.',
         'Improved API and report performance by tuning slow queries and adding Redis caching for hot read paths.',
-        'Contributed as part of the team to the platform modernization from Angular 16 to Angular 19, and the move to Bootstrap 5.'
+        'Contributed as part of the team to the platform modernization from Angular 16 to Angular 18, and the move to Bootstrap 5.'
       ]
     },
     {

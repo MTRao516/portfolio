@@ -249,7 +249,9 @@
 <div class="modal-backdrop" *ngIf="openProject" (click)="closeCase()"></div>
 <section class="modal" *ngIf="openProject" role="dialog" aria-modal="true"
   [attr.aria-label]="openProject.name + ' case study'" (keydown)="onModalKeydown($event)">
-  <button class="modal-close" type="button" (click)="closeCase()" aria-label="Close case study" title="Close">x</button>
+  <button class="modal-close" type="button" (click)="closeCase()" aria-label="Close case study" title="Close">
+    <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+  </button>
   <div class="modal-top">
     <span class="project-cat">
       <svg class="glyph" aria-hidden="true"><use [attr.href]="'#i-' + iconFor(openProject)"></use></svg>
