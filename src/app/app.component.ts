@@ -240,7 +240,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         approach: [
           'Modelled the agent as a typed state machine so every step is explicit and testable.',
           'Grounded answers with retrieval over a vector store, with a cache in front of the hot queries.',
-          'Ran two speech pipelines - speech-to-speech and a cascaded STT/LLM/TTS path - with automatic failover mid-call.'
+          'Ran two speech pipelines - speech-to-speech and a cascaded STT/LLM/TTS path - with automatic failover mid-call.',
           'Added deterministic guards: the agent cannot claim a booking without a successful tool call, and emergency phrases bypass the model entirely.'
         ],
         outcome: 'A voice platform whose claims are checked against what actually executed, not against what the model said.'
