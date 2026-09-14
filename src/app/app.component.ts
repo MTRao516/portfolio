@@ -142,14 +142,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       desc: 'Delivered across HRMS, health, fleet, invoice, security, careers, incident management and approvals.'
     },
     {
-      hi: '3',
-      label: 'Product surfaces',
-      desc: 'Worked across a multi-tenant enterprise platform, a CapEx approval product, and a multilingual voice-AI project.'
+      hi: '35+',
+      label: 'Business domains',
+      desc: 'Built features across a multi-tenant platform spanning workforce, payroll, billing, assets, fleet and compliance.'
     },
     {
       hi: 'Faster',
       label: 'APIs and reports',
-      desc: 'Removed N+1 query bottlenecks with JOIN FETCH and projections, and added Redis caching on hot read paths.'
+      desc: 'Tuned slow endpoints and reports, and added Redis caching on hot read paths.'
     },
   ];
 
@@ -232,18 +232,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       name: 'Conversational Voice-AI Agent',
       badge: 'RAG',
       featured: true,
-      desc: 'A multilingual voice agent exploring real-time speech, retrieval grounding and agentic orchestration.',
-      proof: 'Hands-on growth project for the next generation of AI apps.',
+      desc: 'A multilingual, multi-tenant voice-agent platform: graph-based agent orchestration, retrieval over a vector store, and a real-time speech pipeline that fails over automatically.',
+      proof: 'Designed and built end to end, including the safety guards.',
       tech: ['LangGraph', 'Gemini', 'RAG', 'Python'],
       caseStudy: {
-        problem: 'I wanted to learn agentic, real-time voice AI by building a realistic assistant rather than only reading docs.',
+        problem: 'A voice assistant that books appointments has to be trusted. A model that sounds confident is not the same as a booking that actually happened.',
         approach: [
-          'Modelled the agent as a LangGraph state machine with guard nodes.',
-          'Grounded responses with retrieval to reduce unsupported answers.',
-          'Added speech-to-speech flow with fallback handling.',
-          'Focused on reliability around the model call: state, memory, grounding and review.'
+          'Modelled the agent as a typed state machine so every step is explicit and testable.',
+          'Grounded answers with retrieval over a vector store, with a cache in front of the hot queries.',
+          'Ran two speech pipelines - speech-to-speech and a cascaded STT/LLM/TTS path - with automatic failover mid-call.'
+          'Added deterministic guards: the agent cannot claim a booking without a successful tool call, and emergency phrases bypass the model entirely.'
         ],
-        outcome: 'A practical learning path into LLM apps, RAG and agentic systems.'
+        outcome: 'A voice platform whose claims are checked against what actually executed, not against what the model said.'
       }
     },
     {
@@ -373,7 +373,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         'Introduced the platform\'s first AI features using OpenAI: a clinical assistant and a field-photo vision capture workflow.',
         'Delivered 20+ production features across HR, fleet, health, invoice, security, careers and incident modules.',
         'Built features end to end within a multi-tenant, JWT-secured platform with RBAC and tenant isolation.',
-        'Improved API and report performance by resolving N+1 query issues and adding Redis caching for hot paths.',
+        'Improved API and report performance by tuning slow queries and adding Redis caching for hot read paths.',
         'Contributed to platform modernization from Angular 16 to Angular 19 with AdminLTE 4 and Bootstrap 5.'
       ]
     },
