@@ -17,6 +17,12 @@ interface Project {
   tech: string[];
   featured?: boolean;
   caseStudy: CaseStudy;
+  /** Stages of the production pipeline, rendered as a flow diagram in the case study. */
+  pipeline?: string[];
+  /** Index of the stage that acts as the safety gate. */
+  gate?: number;
+  /** What happens when the gate rejects. */
+  gateNote?: string;
 }
 
 interface Impact {
@@ -150,6 +156,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   projects: Project[] = [
     {
       id: 'clinical',
+      pipeline: ['Request', 'Prompt + context', 'Model', 'Validate', 'Doctor review', 'Persist'],
+      gate: 3,
+      gateNote: 'Nothing reaches the patient record until a doctor approves it. Output that fails validation is never persisted.',
       cat: 'AI + Health',
       name: 'AI Clinical Assistant',
       badge: 'OpenAI',
@@ -170,6 +179,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     },
     {
       id: 'vision',
+      pipeline: ['Photo upload', 'Compress', 'Vision model', 'Validate + confidence', 'Manual check', 'Structured record'],
+      gate: 3,
+      gateNote: 'Below the confidence threshold the extraction is queued for a human instead of being trusted.',
       cat: 'AI + Vision',
       name: 'Vision Data Capture',
       badge: 'Field Ops',
@@ -190,6 +202,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     },
     {
       id: 'capex',
+      pipeline: ['Raise request', 'Amount-slab routing', 'Parallel approvers', 'Completion rules', 'Budget commit', 'Audit trail'],
+      gate: 3,
+      gateNote: 'Completion rules decide when an approval level is satisfied. Every transition is written to a tamper-evident trail.',
       cat: 'Finance',
       name: 'Capital-Expenditure Approval Platform',
       badge: 'Spring Boot 3',
@@ -210,6 +225,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     },
     {
       id: 'voice',
+      pipeline: ['Speech in', 'Intent', 'Retrieve (RAG)', 'Guard node', 'Reply', 'Speech out'],
+      gate: 3,
+      gateNote: 'Guard nodes check each model step against real data before the agent is allowed to act.',
       cat: 'AI + Exploration',
       name: 'Conversational Voice-AI Agent',
       badge: 'RAG',

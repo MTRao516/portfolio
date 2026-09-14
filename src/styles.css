@@ -1491,3 +1491,141 @@ strong {
     transform: none !important;
   }
 }
+
+/* ============================================================
+   Production-pipeline diagram (case studies)
+   Flex/gap so it reflows to a vertical stack on narrow screens.
+   Real text, not SVG: selectable, translatable, screen-readable.
+   ============================================================ */
+.arch {
+  margin: 24px 0 8px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-2);
+}
+
+.arch figcaption {
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.arch-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  perspective: 900px;
+}
+
+.arch-flow li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arch-node {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15, 27, 45, .05), 0 8px 16px -14px rgba(15, 27, 45, .5);
+  transform-style: preserve-3d;
+  transition: transform .25s cubic-bezier(.22, .61, .36, 1), box-shadow .25s, border-color .25s;
+}
+
+.arch-node:hover {
+  transform: translateY(-3px) rotateX(8deg) rotateY(-6deg);
+  border-color: var(--accent);
+  box-shadow: 0 2px 4px rgba(15, 27, 45, .06), 0 18px 28px -18px rgba(15, 27, 45, .55);
+}
+
+/* the safety gate: where model output stops being trusted */
+.arch-flow li.is-gate .arch-node {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* flowing connector between stages */
+.arch-flow li:not(.is-last)::after {
+  content: '';
+  flex: none;
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
+  background-image: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 13px);
+  background-size: 13px 2px;
+  opacity: .6;
+  animation: arch-travel 800ms linear infinite;
+}
+
+@keyframes arch-travel {
+  to { background-position: 13px 0; }
+}
+
+.arch-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.arch-note-key {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+@media (max-width: 620px) {
+  .arch-flow { flex-direction: column; align-items: stretch; }
+  .arch-flow li { flex-direction: column; align-items: stretch; gap: 8px; }
+  .arch-node { justify-content: center; }
+  .arch-flow li:not(.is-last)::after {
+    width: 2px;
+    height: 18px;
+    align-self: center;
+    background-image: repeating-linear-gradient(180deg, var(--accent) 0 6px, transparent 6px 13px);
+    background-size: 2px 13px;
+    animation-name: arch-travel-v;
+  }
+  @keyframes arch-travel-v { to { background-position: 0 13px; } }
+}
+
+/* Native scroll-driven progress: runs on the compositor, no JS on the scroll path.
+   The JS width binding stays as the fallback for engines without scroll timelines. */
+@supports (animation-timeline: scroll()) {
+  .progress {
+    width: 100% !important;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    animation: progress-grow linear both;
+    animation-timeline: scroll(root block);
+  }
+  @keyframes progress-grow { to { transform: scaleX(1); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch-flow li:not(.is-last)::after { animation: none; }
+  .arch-node { transition: none; }
+  .arch-node:hover { transform: none; }
+}

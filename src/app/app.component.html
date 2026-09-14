@@ -260,6 +260,19 @@
     <h3>Problem</h3>
     <p>{{ openProject.caseStudy.problem }}</p>
   </div>
+
+  <figure class="arch" *ngIf="openProject.pipeline">
+    <figcaption>How it runs in production</figcaption>
+    <ol class="arch-flow">
+      <li *ngFor="let stage of openProject.pipeline; let i = index; let last = last"
+          [class.is-gate]="i === openProject.gate" [class.is-last]="last">
+        <span class="arch-node">{{ stage }}</span>
+      </li>
+    </ol>
+    <p class="arch-note" *ngIf="openProject.gateNote">
+      <span class="arch-note-key" aria-hidden="true"></span>{{ openProject.gateNote }}
+    </p>
+  </figure>
   <div class="case-block">
     <h3>Approach</h3>
     <ul>
