@@ -504,6 +504,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     el.style.setProperty('--ry', `${(-y * 9).toFixed(2)}deg`);
     this.ptr.x = x * 2;
     this.ptr.y = -y * 2;
+    this.glWake?.();
   }
 
   onHeroLeave(e: MouseEvent): void {
@@ -514,6 +515,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     el.style.setProperty('--ry', '0deg');
     this.ptr.x = 0;
     this.ptr.y = 0;
+    this.glWake?.();
   }
 
   iconFor(project: Project): string {
@@ -599,9 +601,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private glStart = 0;
   private ptr = { x: 0, y: 0 };
   private ptrEased = { x: 0, y: 0 };
+  private glWake: (() => void) | null = null;
 
   private initPortraitGl(): void {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // The effect is pointer-driven, so it earns its cost only where there is a
+    // real pointer and headroom. Touch devices get the (identical-looking) image
+    // and keep their battery and main thread.
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (window.innerWidth < 900) return;
+    if ((navigator.hardwareConcurrency || 8) < 4) return;
     const canvas = this.portraitGlRef?.nativeElement;
     const img = this.portraitImgRef?.nativeElement;
     if (!canvas || !img) return;
@@ -670,7 +679,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         const resize = () => {
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
           const w = Math.round(canvas.clientWidth * dpr);
           const h = Math.round(canvas.clientHeight * dpr);
           if (w && h && (canvas.width !== w || canvas.height !== h)) {
@@ -682,17 +691,29 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.glStart = performance.now();
         this.portraitGlOn = true;
 
+        // Render on demand. A continuously running loop costs ~2.5s of blocking
+        // time on a throttled CPU for an effect nobody is looking at; instead we
+        // draw only while the intro is fading in or the pointer is still settling,
+        // and park the loop as soon as the frame stops changing.
         const frame = (now: number) => {
           resize();
-          // ease the pointer so motion feels weighted, not twitchy
-          this.ptrEased.x += (this.ptr.x - this.ptrEased.x) * 0.08;
-          this.ptrEased.y += (this.ptr.y - this.ptrEased.y) * 0.08;
+          const dx = this.ptr.x - this.ptrEased.x;
+          const dy = this.ptr.y - this.ptrEased.y;
+          this.ptrEased.x += dx * 0.08;   // eased so motion feels weighted
+          this.ptrEased.y += dy * 0.08;
           const elapsed = (now - this.glStart) / 1000;
+          const fade = Math.min(1, elapsed / 0.6);
           gl.uniform2f(uMouse, this.ptrEased.x, this.ptrEased.y);
           gl.uniform1f(uT, elapsed);
-          gl.uniform1f(uFade, Math.min(1, elapsed / 0.6));
+          gl.uniform1f(uFade, fade);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+          const settled = Math.abs(dx) < 0.0008 && Math.abs(dy) < 0.0008;
+          if (fade >= 1 && settled) { this.glRaf = 0; return; }   // park
           this.glRaf = requestAnimationFrame(frame);
+        };
+        this.glWake = () => {
+          if (!this.glRaf && this.glCtx) this.glRaf = requestAnimationFrame(frame);
         };
         this.glRaf = requestAnimationFrame(frame);
 
@@ -701,8 +722,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         if ('IntersectionObserver' in window) {
           const vis = new IntersectionObserver((entries) => {
             const showing = entries.some((e) => e.isIntersecting);
-            if (showing && !this.glRaf) {
-              this.glRaf = requestAnimationFrame(frame);
+            if (showing) {
+              this.glWake?.();
             } else if (!showing && this.glRaf) {
               cancelAnimationFrame(this.glRaf);
               this.glRaf = 0;
