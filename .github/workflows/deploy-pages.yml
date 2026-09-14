@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GITHUB_TOKEN needs to be able to publish a Pages artifact.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two publishes race; queue instead of cancelling, so a push that
+# lands mid-deploy still ends up live.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # No --base-href: this is a user site (repo named <user>.github.io), so it
+      # is served from the domain root. styles.css loads its fonts from /fonts/,
+      # which only resolves at the root - a project site under /<repo>/ would
+      # 404 every font and silently fall back to system faces.
+      - name: Build
+        run: npm run build
+
+      # Pages has no redirect rules. Serving index.html as the 404 page means a
+      # deep link still boots the app instead of showing Pages' own 404.
+      - name: Add SPA fallback
+        run: cp dist/portfolio/browser/index.html dist/portfolio/browser/404.html
+
+      # .nojekyll stops Pages running the output through Jekyll, which would
+      # silently drop any file or folder whose name starts with an underscore.
+      - name: Disable Jekyll
+        run: touch dist/portfolio/browser/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/portfolio/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
