@@ -212,17 +212,17 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       badge: 'Spring Boot 3',
       featured: true,
       desc: 'Configurable multi-level approvals, budget tracking and a tamper-evident audit trail for high-value spend decisions.',
-      proof: 'A full product-grade workflow, not a demo screen.',
+      proof: 'Every approval is verifiable, not just recorded.',
       tech: ['Java 17', 'Spring Boot 3', 'React', 'SQL Server'],
       caseStudy: {
         problem: 'Capital-spend approvals needed configurable routing, budget visibility and verifiable history.',
         approach: [
           'Built amount-slab routing with parallel approvers and completion rules.',
           'Tracked commitment and budget consumption through the approval lifecycle.',
-          'Designed an audit trail for every action and status change.',
+          'Hash-chained every audit entry to the one before it, so an edited or deleted record can be detected rather than trusted.',
           'Delivered backend and frontend across a multi-tenant product surface.'
         ],
-        outcome: 'A robust approval product that demonstrates architecture, workflow modelling and end-to-end delivery.'
+        outcome: 'Approvals that can be reconstructed after the fact: who approved what, at which level, against which budget - and proof the record has not been altered since.'
       }
     },
     {
