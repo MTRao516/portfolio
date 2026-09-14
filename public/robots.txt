@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://thirupathi-murala.netlify.app/sitemap.xml
+Sitemap: https://murala-thirupathi.github.io/sitemap.xml

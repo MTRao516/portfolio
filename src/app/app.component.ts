@@ -77,7 +77,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   phone = '+91 96400 46001';
   location = 'Hyderabad, Telangana';
   linkedin = 'https://www.linkedin.com/in/thirupathi-murala/';
-  github = 'https://github.com/MTRao516';
+  github = 'https://github.com/murala-thirupathi';
   year = new Date().getFullYear();
 
   theme: 'dark' | 'light' = 'dark';
